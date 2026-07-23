@@ -25,7 +25,7 @@ CONFIG_MODELOS = {
     },
     Tarea.generacion_informe: {
         "proveedor": "openai",
-        "modelo": "gpt-4o",  # ajusta al identificador vigente cuando lo pruebes
+        "modelo": "gpt-5",  # ajusta al identificador vigente cuando lo pruebes
         "temperatura": 0.3,
     },
 }
@@ -67,12 +67,24 @@ class LLMClient:
         return response.content[0].text
 
     def _call_openai(self, config, prompt, system):
-        response = self._openai.chat.completions.create(
-            model=config["modelo"],
-            temperature=config["temperatura"],
-            messages=[
+        params = {
+            "model": config["modelo"],
+            "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": prompt},
             ],
-        )
+        }
+        if config.get("temperatura") is not None:
+            try:
+                response = self._openai.chat.completions.create(
+                    temperature=config["temperatura"], **params
+                )
+            except Exception as e:
+                msg = str(e).lower()
+                if "temperature" in msg and ("unsupported" in msg or "deprecated" in msg or "not support" in msg):
+                    response = self._openai.chat.completions.create(**params)
+                else:
+                    raise
+        else:
+            response = self._openai.chat.completions.create(**params)
         return response.choices[0].message.content
