@@ -44,3 +44,50 @@ A validar con más casos de prueba (mínimo 10-15):
 
 Un único caso de prueba no permite conclusiones estadísticas; sirve
 únicamente como punto de partida para el diseño del benchmark.
+---
+
+## Método de cálculo de riesgo: cualitativo escalado (MAGERIT)
+
+**Fecha:** 2026-07-23
+
+### Fórmula
+valor_riesgo = probabilidad_efectiva × impacto
+probabilidad_efectiva = probabilidad_base_amenaza × factor_explotacion
+impacto = max(valor_C, valor_I, valor_D) del activo
+### Justificación
+
+- **Método cualitativo escalado** en lugar de puramente cuantitativo
+  (ej. modelos actuariales, FAIR): no se dispone de datos históricos
+  de incidentes reales para calibrar distribuciones de probabilidad.
+  El método cualitativo escalado es el que MAGERIT recomienda para
+  organizaciones sin histórico consolidado.
+- **Impacto = máximo de las dimensiones CIAT** en lugar de media o suma:
+  criterio conservador de MAGERIT — el peor efecto sobre cualquier
+  dimensión define el impacto global del activo.
+- **Factor de explotación** (0.3 / 0.6 / 1.0) como modulador: una
+  vulnerabilidad de fácil explotación no cambia la amenaza en sí, pero
+  aumenta la probabilidad de que la amenaza se materialice.
+
+### Umbrales de nivel
+
+| Rango valor_riesgo | Nivel |
+|---|---|
+| [0.0, 2.0) | bajo |
+| [2.0, 4.0) | medio |
+| [4.0, 7.0) | alto |
+| [7.0, 10.0] | crítico |
+
+### Ventaja arquitectónica
+
+El cálculo es **determinístico y trazable**: dados los mismos inputs, el
+motor produce siempre el mismo output. Los LLMs se emplean para tareas
+interpretativas (extracción, clasificación, redacción) pero el cálculo
+cuantitativo se aísla en un módulo Python con reglas explícitas, lo que
+permite auditar cualquier valor de riesgo hasta su fórmula de origen.
+
+### Prueba de validación
+
+Caso: fallo de cifrado en BD de clientes (C=9, I=7, D=5), amenaza acceso
+no autorizado (p=0.6), vulnerabilidad de facilidad alta.
+
+Resultado: probabilidad=0.6, impacto=9.0, valor_riesgo=5.4, nivel=alto.
