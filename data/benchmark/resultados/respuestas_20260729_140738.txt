@@ -1,0 +1,1981 @@
+================================================================================
+Caso C01 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según Metodología MAGERIT
+
+## 1. IDENTIFICACIÓN DEL ACTIVO
+
+| Campo | Detalle |
+|---|---|
+| **Activo afectado** | Base de datos de clientes |
+| **Tipo de activo (MAGERIT)** | [D] Datos/Información |
+| **Subtipo** | Datos de carácter personal / datos sensibles |
+| **Activos relacionados** | [SW] Software gestor de BD, [HW] Servidor, [S] Servicio de cifrado |
+
+## 2. AMENAZA IDENTIFICADA
+
+| Campo | Detalle |
+|---|---|
+| **Código MAGERIT** | [E.2] Errores de configuración / [A.11] Acceso no autorizado |
+| **Categoría** | Errores y fallos no intencionados / Ataques deliberados |
+| **Descripción** | Fallo en el mecanismo de cifrado que deja los datos expuestos en claro |
+| **Origen probable** | Configuración incorrecta, algoritmo débil/obsoleto, gestión deficiente de claves, fallo de implementación |
+
+## 3. DIMENSIONES DE SEGURIDAD AFECTADAS
+
+| Dimensión | Afectación | Nivel |
+|---|---|---|
+| **[C] Confidencialidad** | 🔴 CRÍTICA | Muy Alta |
+| **[I] Integridad** | 🟡 Indirecta | Media |
+| **[D] Disponibilidad** | ⚪ No aplica directamente | Baja |
+| **[A] Autenticidad** | 🟡 Posible | Media |
+| **[T] Trazabilidad** | 🟡 Posible | Media |
+
+## 4. VALORACIÓN DEL RIESGO
+
+### Probabilidad (frecuencia)
+```
+Nivel: MEDIA-ALTA
+- Los fallos de cifrado son comunes por mala gestión de claves
+- Actualizaciones de software pueden reiniciar configuraciones
+- Rotación de certificados/claves mal gestionada
+```
+
+### Impacto
+```
+Nivel: MUY ALTO (Crítico)
+- Exposición de datos personales sensibles
+- Posible infracción RGPD/LOPDGDD
+- Daño reputacional severo
+- Sanciones económicas significativas
+```
+
+### Matriz de Riesgo
+
+| | Impacto Bajo | Impacto Medio | Impacto Alto | Impacto Muy Alto |
+|---|---|---|---|---|
+| **Prob. Muy Alta** | | | | |
+| **Prob. Alta** | | | | 🔴 **RIESGO** |
+| **Prob. Media** | | | | |
+| **Prob. Baja** | | | | |
+
+**RIESGO RESULTANTE: CRÍTICO/MUY ALTO**
+
+## 5. IMPACTO LEGAL Y NORMATIVO
+
+| Normativa | Aplicabilidad |
+|---|---|
+| **RGPD (UE)** | Art. 32 - Medidas técnicas de seguridad; Art. 33/34 - Notificación de brechas |
+| **LOPDGDD (España)** | Sanciones hasta 20M€ o 4% facturación anual |
+| **ENS** (si aplica) | Incumplimiento de medidas de protección de la información |
+
+## 6. SALVAGUARDAS RECOMENDADAS (MAGERIT)
+
+| Código | Salvaguarda | Prioridad |
+|---|---|---|
+| **[NEW.6]** | Cifrado de datos en reposo (AES-256 mínimo) | 🔴 Inmediata |
+| **[NEW.7]** | Gestión robusta de claves criptográficas (HSM) | 🔴 Inmediata |
+| **[D.9]** | Auditoría periódica de configuraciones de cifrado | 🟠 Alta |
+| **[H.5]** | Monitorización continua del estado del cifrado | 🟠 Alta |
+| **[PS.6]** | Formación técnica al personal responsable | 🟡 Media |
+| **[COM.1]** | Cifrado también en tránsito (TLS 1.3) | 🔴 Inmediata |
+
+## 7. RECOMENDACIÓN EJECUTIVA
+
+> ⚠️ **Este riesgo requiere tratamiento INMEDIATO**
+> 
+> Se recomienda:
+> 1. Auditoría urgente del estado actual del cifrado
+> 2. Implementación de verificación automática de integridad del cifrado
+> 3. Plan de respuesta a incidentes específico para esta amenaza
+> 4. Evaluación de impacto de protección de datos (EIPD) si no existe
+
+---
+¿Deseas que profundice en alguna sección (ej. cálculo cuantitativo del riesgo, plan de tratamiento detallado, o mapeo con controles ISO 27001)?
+
+================================================================================
+Caso C01 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo: “Fallo de cifrado en base de datos de clientes con datos personales sensibles”
+
+- Activo primario afectado:
+  - Información de clientes (datos personales sensibles / categorías especiales RGPD).
+- Activos de soporte:
+  - Base de datos y su motor, servidor/hipervisor, sistema de gestión de claves/cripto (KMS/HSM), copias de seguridad, SO y red.
+
+- Amenaza (catálogo MAGERIT):
+  - Divulgación de información / acceso no autorizado a la información.
+  - Error/fallo de software o de configuración (implementación de cifrado defectuosa, parámetros inseguros).
+  - Ataque deliberado que explota debilidades criptográficas o gestión deficiente de claves.
+
+- Vulnerabilidades típicas:
+  - Algoritmos/parametrías obsoletos, claves débiles o no rotadas, custodia de claves en el mismo servidor de BD.
+  - Cifrado mal configurado (TDE/columnas), backups o volcados sin cifrar, conexiones sin TLS.
+  - Falta de segregación de funciones y de revisiones criptográficas.
+
+- Dimensiones de seguridad afectadas (impacto estimado):
+  - Confidencialidad: Muy alto/crítico.
+  - Integridad: Medio.
+  - Disponibilidad: Bajo–medio (podría subir si el fallo impide descifrar/acceder).
+  - Autenticidad: Medio-bajo.
+  - Trazabilidad: Medio.
+
+- Probabilidad (verosimilitud) estimada:
+  - Media (al alza si hay algoritmos obsoletos o mala gestión de claves; a la baja si hay KMS/HSM y hardening).
+
+- Nivel de riesgo resultante (cualitativo):
+  - Alto, por impacto crítico en confidencialidad y probabilidad al menos media, con implicaciones legales y sancionadoras (RGPD).
+
+================================================================================
+Caso C01 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), el riesgo que has descrito se puede clasificar de la siguiente manera:
+
+**Identificador del riesgo:** Fallo de cifrado en base de datos de clientes
+
+**Descripción del riesgo:** La base de datos de clientes que contiene datos personales sensibles no está cifrada adecuadamente, lo que podría permitir el acceso no autorizado a dicha información.
+
+**Categoría del riesgo:** Seguridad de la Información
+
+**Subcategoría del riesgo:** Confidencialidad
+
+**Nivel de impacto:** Alto
+
+* **Impacto en la confidencialidad:** Alto (pérdida de datos personales sensibles)
+* **Impacto en la integridad:** Medio (posible modificación de datos)
+* **Impacto en la disponibilidad:** Bajo (no se espera un impacto significativo en la disponibilidad del sistema)
+
+**Nivel de probabilidad:** Medio
+
+* **Probabilidad de ocurrencia:** Medio (el fallo de cifrado puede ocurrir debido a errores de configuración o vulnerabilidades en el software)
+
+**Nivel de riesgo:** Alto
+
+* **Riesgo = Impacto x Probabilidad:** Alto (Impacto Alto x Probabilidad Medio)
+
+**Recomendaciones de tratamiento:**
+
+1. Implementar un cifrado adecuado para la base de datos de clientes.
+2. Realizar auditorías regulares para detectar vulnerabilidades en el sistema de cifrado.
+3. Capacitar al personal en la importancia del cifrado y la seguridad de la información.
+4. Establecer procedimientos para la gestión de incidentes de seguridad en caso de que se produzca un fallo de cifrado.
+
+Es importante tener en cuenta que la clasificación del riesgo puede variar dependiendo del contexto específico de la organización y del sistema de información. Es recomendable realizar un análisis detallado y actualizar la clasificación del riesgo según sea necesario.
+
+================================================================================
+Caso C02 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según MAGERIT
+
+## 1. Identificación del Activo Afectado
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[D] Datos/Información** | Datos de nómina (información de carácter personal y económico) |
+| **[S] Servicios** | Servicio de correo electrónico/distribución |
+
+## 2. Dimensión de Seguridad Afectada
+
+| Dimensión | Afectación |
+|---|---|
+| **[C] Confidencialidad** | **CRÍTICA** - Es la dimensión principal afectada. Datos sensibles expuestos a terceros no autorizados |
+| [I] Integridad | No afectada directamente |
+| [D] Disponibilidad | No afectada |
+| [A] Autenticidad | No afectada |
+| [T] Trazabilidad | Relevante para investigación posterior |
+
+## 3. Clasificación de la Amenaza (Catálogo MAGERIT)
+
+**Categoría:** [E] Errores y fallos no intencionados
+
+**Amenaza específica:**
+```
+[E.2] Errores del administrador
+[E.19] Fugas de información
+```
+
+> **Nota:** La amenaza más precisa es **[E.19] Fugas de información**, ya que MAGERIT la define como "revelación por indiscreción o incompetencia" — encaja exactamente con el envío erróneo de datos sensibles.
+
+## 4. Origen de la Amenaza
+
+- **Tipo:** Accidental (no intencionado)
+- **Origen:** Interno (personal propio)
+- **Causa raíz:** Error humano / fallo de proceso
+
+## 5. Valoración del Riesgo
+
+| Factor | Valoración | Justificación |
+|---|---|---|
+| **Probabilidad** | Media-Alta | Error humano frecuente en organizaciones sin controles DLP |
+| **Impacto** | Alto | Datos de nómina = datos personales + económicos (RGPD) |
+| **Riesgo resultante** | **ALTO** | Combinación de impacto crítico y probabilidad no despreciable |
+
+## 6. Consecuencias Asociadas
+
+- ⚖️ **Legal:** Posible violación RGPD/LOPDGDD (brecha de seguridad, notificación a AEPD en 72h)
+- 💰 **Económica:** Sanciones administrativas
+- 🏢 **Reputacional:** Pérdida de confianza de empleados
+- 👥 **Personal:** Daño a los afectados (empleados cuyos datos se filtraron)
+
+## 7. Salvaguardas Recomendadas (Catálogo MAGERIT)
+
+| Código | Salvaguarda |
+|---|---|
+| **[D.I.9]** | Cifrado de información sensible |
+| **[COM.aut]** | Autenticación y verificación de destinatarios antes del envío |
+| **[HW/SW DLP]** | Herramientas de prevención de fuga de datos (Data Loss Prevention) |
+| **[PS.and]** | Formación y concienciación del personal |
+| **[org]** | Procedimientos de revisión antes de envíos masivos externos |
+| **[BC]** | Plan de respuesta a incidentes / brecha de datos |
+
+## 8. Resumen para Matriz de Riesgos
+
+```
+Activo:        Datos de nómina (información personal)
+Amenaza:       [E.19] Fugas de información
+Dimensión:     Confidencialidad
+Probabilidad:  Media-Alta
+Impacto:       Alto
+Nivel Riesgo:  ALTO
+Tratamiento:   Requiere mitigación inmediata (controles + notificación RGPD)
+```
+
+¿Deseas que profundice en el cálculo del impacto/probabilidad con una matriz cuantitativa o en el plan de tratamiento del riesgo?
+
+================================================================================
+Caso C02 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Activo afectado: Información de nóminas (datos personales/confidenciales).
+- Dimensiones de seguridad impactadas: 
+  - Principal: Confidencialidad.
+  - Secundarias: Cumplimiento/Legalidad y Trazabilidad/Responsabilidad (por obligación de registro y notificación).
+- Origen/Agente: Interno (empleado). Intencionalidad: no intencionada (error humano).
+- Amenaza (catálogo MAGERIT v3): T7 – Errores y fallos no intencionados de las personas; caso típico: divulgación/entrega errónea de información.
+- Canal de materialización: Correo electrónico (lista de distribución externa).
+- Escenario de riesgo: Envío accidental de fichero de nóminas a destinatarios no autorizados (fuga de datos personales).
+- Valoración genérica (ajustar a contexto):
+  - Impacto: Alto (afecta a datos personales; sanciones y reputación).
+  - Probabilidad: Media (dependiente de controles como DLP, revisión de destinatarios, clasificación).
+  - Nivel de riesgo: Alto.
+
+================================================================================
+Caso C02 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), este riesgo se clasificaría de la siguiente manera:
+
+* **Tipo de riesgo**: Riesgo de Confidencialidad (C)
+ + El riesgo se refiere a la pérdida de confidencialidad de la información, ya que los datos de nómina son confidenciales y no deben ser compartidos con personas no autorizadas.
+* **Activo afectado**: Información (I)
+ + El activo afectado es la información contenida en el fichero con datos de nómina.
+* **Vulnerabilidad**: Error humano (EH)
+ + La vulnerabilidad se debe a un error humano, específicamente la acción del empleado que envió el fichero por error a una lista de distribución externa.
+* **Amenaza**: Acceso no autorizado (ANA)
+ + La amenaza es el acceso no autorizado a la información confidencial, en este caso, los datos de nómina.
+* **Impacto**: Alto (A)
+ + El impacto es alto, ya que la pérdida de confidencialidad de los datos de nómina puede tener consecuencias legales y financieras para la organización, así como dañar la reputación de la empresa.
+* **Probabilidad**: Media (M)
+ + La probabilidad es media, ya que el error humano es un factor común en la mayoría de las organizaciones, y la posibilidad de que un empleado cometa un error de este tipo es moderada.
+
+Por lo tanto, el riesgo se clasificaría como: **C-I-EH-ANA-A-M**
+
+Es importante tener en cuenta que la clasificación del riesgo puede variar dependiendo de la organización y del contexto específico en el que se produce el incidente.
+
+================================================================================
+Caso C03 - anthropic/claude-sonnet-5
+================================================================================
+
+
+================================================================================
+Caso C03 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo: “Fuga de credenciales de administrador en repositorio público de GitHub (expuestas 48 h)”
+
+- Activo afectado:
+  - Primario: Credenciales administrativas (información de autenticación/autoridad).
+  - Secundario: Sistemas/servicios a los que otorgan acceso (producción, nube, CI/CD, repos internos).
+
+- Amenaza (catálogo MAGERIT v3):
+  - Principal: Divulgación de información (fuga de información/secretos) por error humano.
+  - Amenazas encadenadas habilitadas: Intrusión, Abuso de privilegios, Suplantación de identidad y Modificación/Destrucción/Interrupción de servicios.
+
+- Agentes de amenaza:
+  - Interno no malicioso (desarrollador/DevOps) — origen del error.
+  - Externo oportunista/automatizado (bots que rastrean repos públicos; atacantes).
+
+- Dimensiones de degradación (CDCAT):
+  - Confidencialidad: Muy Alta (exposición total de secretos).
+  - Integridad: Alta–Muy Alta (posible modificación maliciosa tras uso de credenciales).
+  - Disponibilidad: Alta (posible interrupción por acceso no autorizado).
+  - Autenticidad: Muy Alta (suplantación de administrador).
+  - Trazabilidad: Alta (posible borrado/alteración de evidencias).
+
+- Probabilidad (verosimilitud):
+  - Alta. La exposición pública en GitHub durante 48 h es suficiente para ser detectada por escaneos automatizados y actores oportunistas.
+
+- Impacto:
+  - Muy Alto/Crítico. Potencial pérdida de control de sistemas, exfiltración de datos, alteraciones operativas y daños reputacionales/legales.
+
+- Nivel de riesgo (MAGERIT):
+  - Crítico. Justificación: Impacto Muy Alto × Probabilidad Alta.
+
+- Observaciones de tratamiento (resumen):
+  - Rotación/revocación inmediata de credenciales, revisión de accesos y registros.
+  - Búsqueda de usos indebidos en la ventana de 48 h y contención.
+  - Implantar secret scanning/controles pre-commit y gestión segura de secretos (vault, credenciales efímeras, MFA, principio de mínimo privilegio).
+
+================================================================================
+Caso C03 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, para clasificar el riesgo debemos considerar varios factores, como el impacto, la probabilidad y la vulnerabilidad. A continuación, te presento una posible clasificación del riesgo:
+
+**Descripción del riesgo:** Fuga de credenciales de administrador en un repositorio público de GitHub, expuestas durante 48 horas.
+
+**Categoría de riesgo:** Acceso no autorizado a información confidencial
+
+**Impacto (I):**
+
+* **Confidencialidad:** Alta (las credenciales de administrador son confidenciales y su exposición puede permitir el acceso no autorizado a sistemas y datos sensibles)
+* **Integridad:** Media (la exposición de credenciales puede permitir la modificación de datos y sistemas, pero no necesariamente la destrucción de los mismos)
+* **Disponibilidad:** Baja (la exposición de credenciales no afecta directamente la disponibilidad de los sistemas y servicios)
+
+**Probabilidad (P):**
+
+* **Vulnerabilidad:** Alta (la exposición de credenciales en un repositorio público de GitHub es una vulnerabilidad grave y fácil de explotar)
+* **Capacidad del atacante:** Media (un atacante con conocimientos básicos de seguridad informática puede aprovechar la vulnerabilidad)
+* **Oportunidad:** Alta (la exposición de credenciales durante 48 horas ofrece una oportunidad significativa para que un atacante las descubra y las explote)
+
+**Nivel de riesgo:** Alto
+
+**Valoración del riesgo:**
+
+* **Impacto:** 6/10 (considerando la confidencialidad, integridad y disponibilidad)
+* **Probabilidad:** 8/10 (considerando la vulnerabilidad, capacidad del atacante y oportunidad)
+* **Nivel de riesgo:** 14/20 (calculado como el producto del impacto y la probabilidad)
+
+**Recomendaciones:**
+
+* Cambiar inmediatamente las credenciales de administrador expuestas
+* Revisar y actualizar las políticas de seguridad para evitar la exposición de credenciales en el futuro
+* Realizar un análisis de vulnerabilidad y pentesting para identificar y corregir otras posibles debilidades de seguridad
+* Considerar la implementación de medidas de autenticación de dos factores para agregar una capa adicional de seguridad a la autenticación de administradores.
+
+================================================================================
+Caso C04 - anthropic/claude-sonnet-5
+================================================================================
+
+
+================================================================================
+Caso C04 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo
+
+- Activo afectado (tipo): Aplicación de negocio (ERP corporativo) y su base de datos; servicios de soporte (servidores, SO, red). Activo de alta criticidad para el proceso corporativo.
+- Amenaza (catálogo MAGERIT, naturaleza): Ataque deliberado externo aprovechando vulnerabilidad de software conocida con exploit público (intrusión/ejecución remota, robo/alteración de información, posible ransomware/DoS).
+- Vulnerabilidad: Falta de aplicación de parches de seguridad (vulnerabilidad crítica con CVE y exploit público).
+- Dimensiones comprometidas: Confidencialidad, Integridad, Disponibilidad, Autenticidad y Trazabilidad (todas con impacto alto).
+- Escenario de riesgo: Un atacante remoto explota la CVE del ERP sin parche para ejecutar código/elevar privilegios, obtener o cifrar datos del ERP y/o interrumpir el servicio.
+- Probabilidad (inherente): Alta a Muy alta mientras el sistema permanezca sin parche, especialmente si el ERP es accesible desde Internet o por terceros.
+- Impacto (inherente): Muy alto, por afectación a la operación core, potencial pérdida/filtración de datos, sanciones regulatorias y daño reputacional.
+- Nivel de riesgo (inherente): Muy alto / Crítico.
+
+Salvaguardas MAGERIT recomendadas (prioridad):
+- Aplicar el parche oficial de inmediato (gestión de parches y vulnerabilidades).
+- Medidas compensatorias hasta parchear: virtual patching en WAF/IPS, bloqueo de IOCs/firmas, deshabilitar servicios afectados y restringir exposición.
+- Endurecimiento y segmentación: minimizar superficie de ataque, acceso mínimo necesario, MFA, segmentación/red perimetral.
+- Detección y respuesta: monitoreo en SIEM/EDR, reglas específicas para la CVE, revisión de logs del ERP.
+- Resiliencia: copias de seguridad verificadas y plan de recuperación probado.
+- Gestión continua: verificación post-parche, pruebas de regresión, escaneo de vulnerabilidades recurrente.
+
+Riesgo residual esperado tras salvaguardas: Bajo a Medio (según exposición y eficacia de controles).
+
+================================================================================
+Caso C04 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, el riesgo asociado a un sistema ERP corporativo sin parche aplicado para una vulnerabilidad crítica con exploit público se clasificaría de la siguiente manera:
+
+* **Impacto (I)**: Alto (I=3)
+ + La explotación de la vulnerabilidad podría permitir a un atacante acceder a información confidencial, modificar datos o incluso tomar el control del sistema, lo que tendría un impacto significativo en la organización.
+* **Probabilidad (P)**: Alta (P=3)
+ + La existencia de un exploit público para la vulnerabilidad aumenta significativamente la probabilidad de que un atacante lo utilice para explotar la vulnerabilidad.
+* **Valor del activo (VA)**: Alto (VA=3)
+ + Un sistema ERP corporativo es un activo crítico para la organización, ya que contiene información confidencial y es fundamental para el funcionamiento del negocio.
+
+Según la fórmula de cálculo del nivel de riesgo en MAGERIT:
+
+Nivel de Riesgo (NR) = (I x P x VA) / 27
+
+Donde I, P y VA son los valores asignados a Impacto, Probabilidad y Valor del Activo, respectivamente.
+
+NR = (3 x 3 x 3) / 27 = 9 / 27 = 1
+
+El nivel de riesgo se clasifica en función del valor obtenido:
+
+* Nivel de Riesgo Bajo: 0 - 0,3
+* Nivel de Riesgo Moderado: 0,4 - 0,6
+* Nivel de Riesgo Alto: 0,7 - 1
+
+En este caso, el nivel de riesgo sería **Alto**, lo que indica que la organización debe tomar medidas inmediatas para mitigar el riesgo, como aplicar el parche correspondiente o implementar medidas de seguridad adicionales para proteger el sistema ERP corporativo.
+
+================================================================================
+Caso C05 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación de Riesgo según MAGERIT
+
+## 1. Identificación del Activo
+- **Tipo de activo:** [SW] Software / Aplicaciones
+- **Activo específico:** Aplicación web en producción
+
+## 2. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Justificación |
+|-----------|------------|----------------|
+| **Confidencialidad [C]** | 🔴 **ALTA** | Exposición de información sensible (rutas, versiones, stack traces, credenciales, queries SQL) |
+| **Integridad [I]** | 🟡 **MEDIA** | Facilita ataques que podrían modificar datos/código |
+| **Disponibilidad [D]** | 🟡 **MEDIA** | Posible exposición a DoS mediante explotación de vulnerabilidades reveladas |
+| **Autenticidad [A]** | 🟡 **MEDIA** | Puede facilitar suplantación al exponer mecanismos de autenticación |
+| **Trazabilidad [T]** | 🟢 **BAJA** | Impacto indirecto en registros de auditoría |
+
+## 3. Clasificación de la Amenaza (Catálogo MAGERIT)
+
+**Grupo:** [E] Errores y fallos no intencionados
+
+- **[E.2] Errores de configuración** ← *Amenaza principal*
+- **[E.15] Alteración accidental de la información** (secundaria)
+
+**Vulnerabilidad explotable por:**
+- **[A.11] Acceso no autorizado**
+- **[A.7] Uso no previsto**
+
+## 4. Valoración del Riesgo
+
+### Probabilidad de ocurrencia
+🔴 **ALTA** — Es un error común en despliegues, fácilmente detectable por atacantes mediante escaneo automatizado
+
+### Impacto potencial
+
+| Información expuesta típica | Riesgo derivado |
+|---|---|
+| Stack traces completos | Revela estructura interna, frameworks, versiones |
+| Variables de entorno | Credenciales, API keys, connection strings |
+| Rutas del sistema de archivos | Facilita ataques de path traversal |
+| Queries SQL sin sanitizar | Facilita inyección SQL dirigida |
+| Información de sesión/tokens | Secuestro de sesión |
+
+### Nivel de Riesgo: 🔴 **CRÍTICO / ALTO**
+
+```
+Riesgo = Probabilidad (Alta) × Impacto (Alto) = CRÍTICO
+```
+
+## 5. Salvaguardas Recomendadas (MAGERIT)
+
+| Código | Salvaguarda |
+|--------|-------------|
+| **[H.SW]** | Gestión de configuración segura del software |
+| **[NEW.1]** | Bastionado de aplicaciones antes de producción |
+| **[H.tools]** | Herramientas de análisis de configuración (SAST/DAST) |
+| — | Pipeline CI/CD con validación automática de flags debug |
+| — | Separación estricta de configuraciones dev/staging/prod |
+| — | Revisión de checklist pre-despliegue (hardening) |
+
+## 6. Recomendación Inmediata
+⚠️ **Acción correctiva urgente:** Desactivar modo debug inmediatamente y auditar logs históricos para determinar si la información expuesta ya fue comprometida.
+
+================================================================================
+Caso C05 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Activo afectado
+  - Primario: Servicio de aplicación web en producción.
+  - Soporte: Servidor de aplicaciones, BBDD, infraestructura de red, registros.
+  - Información: Datos tratados por la aplicación (posible dato personal/confidencial).
+
+- Amenaza (catálogo MAGERIT)
+  - Naturaleza: Error humano/organizativo no intencionado.
+  - Tipo: Configuración insegura/incorrecta del software (activación de depuración en producción).
+  - Agente y explotación: Atacante externo que aprovecha la configuración insegura para obtener información o ejecutar acciones no autorizadas.
+
+- Dimensiones de seguridad afectadas (impacto orientativo)
+  - Confidencialidad: Muy alto. La depuración suele exponer trazas, variables de entorno, rutas, claves o endpoints internos.
+  - Integridad: Alto. Algunos depuradores permiten modificar estado o incluso ejecutar código en servidor.
+  - Disponibilidad: Medio. La verbosidad y pruebas sobre endpoints de debug pueden degradar el servicio o facilitar DoS lógico.
+  - Autenticidad: Alto. Pueden existir rutas de prueba/diagnóstico que eludan controles de autenticación/autorización.
+  - Trazabilidad: Medio. La ejecución vía consolas de depuración puede alterar registros o dificultar su fiabilidad.
+
+- Probabilidad de materialización
+  - Alta. Es una mala práctica común y, una vez expuesta a Internet, su explotación es trivial o asistida por buscadores/escáneres.
+
+- Nivel de riesgo (inherente)
+  - Alto/Muy alto, según sensibilidad de los datos y exposición del servicio.
+
+- Escenarios de pérdida típicos
+  - Divulgación de información técnica y secretos (C).
+  - Acceso no autorizado y modificación de datos o configuración (I/A).
+  - Degradación o caída del servicio por abuso de endpoints de debug (D).
+
+- Controles/salvaguardas recomendadas (MAGERIT: preventivas y de detección)
+  - Deshabilitar siempre la depuración en producción; construir con configuración segura por defecto.
+  - Separación estricta de entornos y validaciones automáticas en CI/CD que bloqueen despliegues con debug activo.
+  - Endurecimiento: eliminar endpoints de diagnóstico, mensajes de error genéricos, minimizar información en excepciones.
+  - Revisión de configuración y pruebas de penetración específicas para detección de modos de depuración.
+  - Monitoreo y reglas de WAF/IDS para detectar y bloquear accesos a rutas de debug.
+
+================================================================================
+Caso C05 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), clasificaría este riesgo de la siguiente manera:
+
+**Identificador del riesgo:** Riesgo de exposición de información confidencial debido a la configuración de depuración activada en la aplicación web en producción.
+
+**Descripción del riesgo:** La aplicación web en producción se encuentra desplegada con la configuración de depuración activada, lo que puede permitir a un atacante obtener información confidencial sobre la aplicación, como datos de configuración, credenciales de acceso o información sensible sobre la lógica de negocio.
+
+**Categoría del riesgo:** Riesgo de Seguridad (S)
+
+**Nivel de probabilidad:** Alto (A)
+
+* La configuración de depuración activada es un error común en el despliegue de aplicaciones web.
+* Un atacante puede detectar la configuración de depuración activada mediante técnicas de exploración y análisis de la aplicación.
+
+**Nivel de impacto:** Alto (A)
+
+* La exposición de información confidencial puede permitir a un atacante obtener acceso no autorizado a la aplicación o a los datos que se procesan.
+* La pérdida de confidencialidad puede tener consecuencias graves para la organización, como la pérdida de reputación, la pérdida de clientes o la exposición a sanciones legales.
+
+**Valor del riesgo:** 12 (Alto)
+
+* Nivel de probabilidad: 4 (Alto)
+* Nivel de impacto: 8 (Alto)
+* Valor del riesgo: 12 (Alto)
+
+**Recomendaciones de mitigación:**
+
+1. Desactivar la configuración de depuración en la aplicación web en producción.
+2. Realizar pruebas de seguridad y exploración para detectar posibles vulnerabilidades en la aplicación.
+3. Implementar medidas de seguridad adicionales, como la autenticación y autorización de acceso, para proteger la aplicación y los datos que se procesan.
+
+En resumen, el riesgo de exposición de información confidencial debido a la configuración de depuración activada en la aplicación web en producción es un riesgo alto que requiere atención inmediata para mitigar sus efectos.
+
+================================================================================
+Caso C06 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación MAGERIT: Ataque a la Cadena de Suministro
+
+## 1. Identificación del Activo Afectado
+
+| Categoría MAGERIT | Activo |
+|---|---|
+| **[SW]** Software - Aplicaciones | Librería de terceros integrada en producción |
+| **[SW]** Software - Aplicaciones | Aplicación/sistema que consume la librería |
+| **[D]** Datos/Información | Datos procesados por la aplicación comprometida |
+| **[S]** Servicios | Servicio de negocio soportado por la aplicación |
+
+## 2. Clasificación de la Amenaza
+
+**Categoría MAGERIT:** `[A] Ataques Intencionados`
+
+**Código de amenaza específico:** `[A.5] Suplantación de la identidad del proveedor` / `[A.11] Acceso no autorizado` / `[A.6] Abuso de privilegios de acceso`
+
+Más precisamente se enmarca en:
+
+**`[A.7] Uso no previsto`** — combinado con **`[A.30] Ingeniería social (picaresca)`** aplicada al ecosistema de desarrollo (typosquatting, compromiso de mantenedor, inyección en pipeline CI/CD del proveedor)
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Impacto | Justificación |
+|---|---|---|
+| **[C] Confidencialidad** | 🔴 Alto | Exfiltración de datos, credenciales, secretos |
+| **[I] Integridad** | 🔴 Crítico | Código malicioso altera lógica de negocio |
+| **[D] Disponibilidad** | 🟠 Medio-Alto | Posible sabotaje, ransomware, backdoors |
+| **[A] Autenticidad** | 🔴 Alto | Suplantación de componente legítimo |
+| **[T] Trazabilidad** | 🟡 Medio | Dificulta detección forense |
+
+## 4. Valoración de Riesgo
+
+### Probabilidad
+**Media-Alta** — Tendencia creciente (SolarWinds, event-stream, ua-parser-js, xz-utils)
+
+### Impacto Potencial
+**Crítico** — Ejecución de código con privilegios de la aplicación host; propagación lateral
+
+### Nivel de Riesgo: 🔴 **ALTO/CRÍTICO**
+
+## 5. Vulnerabilidades Asociadas (MAGERIT)
+
+- Ausencia de control de versiones/pinning de dependencias (lockfiles)
+- Falta de análisis SCA (Software Composition Analysis)
+- Ausencia de SBOM (Software Bill of Materials)
+- No verificación de firmas/checksums de paquetes
+- Actualizaciones automáticas sin revisión (auto-update en CI/CD)
+- Falta de segregación de entornos y principio de mínimo privilegio
+
+## 6. Salvaguardas Recomendadas (MAGERIT)
+
+| Categoría | Controles |
+|---|---|
+| **[H] Protección de hardware/soporte** | Entornos aislados de ejecución (sandboxing) |
+| **[SW] Protección de aplicaciones** | SCA, SAST/DAST, escaneo de dependencias (Snyk, Dependabot) |
+| **[COM] Protección de comunicaciones** | Monitorización de tráfico saliente anómalo |
+| **[NEW] Gestión de proveedores** | Auditoría de terceros, SBOM obligatorio, verificación de firmas GPG |
+| **[BC] Continuidad de negocio** | Plan de respuesta a incidentes específico para supply chain |
+
+---
+
+**Referencia normativa cruzada:** ISO 27001 (A.15 - Relaciones con proveedores), NIST SP 800-161, ENS (medida `mp.sw`)
+
+================================================================================
+Caso C06 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Nombre del riesgo: Compromiso de la cadena de suministro de software (librería de terceros maliciosa en producción)
+- Tipo de amenaza (Catálogo MAGERIT, Libro II): Acciones deliberadas contra el software
+  - Introducción de código malicioso (malware), puertas traseras o manipulación de software de terceros
+  - Vía de materialización: actualización/versión comprometida en el gestor de dependencias o repositorio del proveedor
+- Activos afectados:
+  - Primarios: Aplicación/servicio en producción, componentes software (librerías/dependencias), pipeline CI/CD y repositorios internos
+  - Secundarios: Datos tratados por la aplicación, credenciales/secretos, infraestructura subyacente, imagen/reputación
+- Dimensiones de seguridad impactadas:
+  - Integridad: Muy alta (alteración del comportamiento del software)
+  - Autenticidad: Alta (el componente deja de ser confiable)
+  - Confidencialidad: Alta si el código exfiltra datos o secretos
+  - Disponibilidad: Media–Alta si provoca fallos/DoS
+  - Trazabilidad: Media si oculta actividad/elimina evidencias
+- Vulnerabilidades tipo (MAGERIT):
+  - Confianza excesiva en terceros y falta de homologación de software
+  - Ausencia de verificación de integridad/firma de paquetes
+  - Gestión automática de actualizaciones sin pruebas previas (no hay preproducción)
+  - Ausencia de SBOM/SCA y de pinning/lock de versiones
+  - Pipeline CI/CD y repositorios sin controles de integridad y segregación
+- Fuentes de amenaza:
+  - Atacante externo que compromete el repositorio/proveedor
+  - Proveedor interno/tercero malicioso o comprometido
+- Probabilidad (orientativa, sin contexto): Media (↑ si hay actualizaciones automáticas y muchas dependencias; ↓ con controles de integridad y homologación)
+- Impacto (orientativo): Alto/Muy alto en entornos con datos sensibles o servicios críticos
+- Nivel de riesgo inherente (estimación cualitativa): Alto
+
+Nota: En MAGERIT este escenario se mapea a la familia de “acciones deliberadas” sobre el software (introducción/manipulación de código malicioso a través de terceros), típicamente tratada con salvaguardas de adquisición/homologación de software, verificación de integridad y control de la cadena de suministro.
+
+================================================================================
+Caso C06 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, el riesgo que describes se puede clasificar de la siguiente manera:
+
+**Identificador del riesgo:** Ataque de cadena de suministro - Código malicioso en librería de terceros
+
+**Descripción del riesgo:** La librería de terceros utilizada en producción incluye código malicioso en su última versión, lo que podría permitir a un atacante acceder a la información confidencial o tomar el control de los sistemas.
+
+**Categoría del riesgo:** Riesgo de Seguridad de la Información (SI)
+
+**Subcategoría del riesgo:** Riesgo de Ataques a la Cadena de Suministro (ACS)
+
+**Nivel de impacto:** Alto
+
+**Nivel de probabilidad:** Medio-Alto
+
+**Valoración del riesgo:** 8/10 (Impacto: 4/5, Probabilidad: 4/5)
+
+**Justificación:**
+
+* El impacto es alto porque el código malicioso podría permitir a un atacante acceder a información confidencial o tomar el control de los sistemas, lo que podría tener consecuencias graves para la organización.
+* La probabilidad es medio-alta porque, aunque la librería de terceros es utilizada en producción, no se conoce con certeza si el código malicioso ha sido activado o si se han tomado medidas para mitigar el riesgo.
+
+**Medidas de mitigación recomendadas:**
+
+* Realizar un análisis de la librería de terceros para detectar y eliminar el código malicioso.
+* Actualizar la librería de terceros a una versión segura.
+* Implementar controles de seguridad adicionales para detectar y prevenir ataques a la cadena de suministro.
+* Revisar y actualizar los procesos de gestión de riesgos y seguridad de la información para incluir la evaluación de riesgos de la cadena de suministro.
+
+Es importante tener en cuenta que la valoración del riesgo y las medidas de mitigación recomendadas pueden variar dependiendo de la organización y del contexto específico en el que se produce el riesgo.
+
+================================================================================
+Caso C07 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación de Riesgo según Metodología MAGERIT
+
+## 1. Identificación del Activo
+
+| Atributo | Detalle |
+|----------|---------|
+| **Activo afectado** | [HW] CPD Principal (instalaciones e infraestructura) |
+| **Tipo de activo** | Instalaciones / Soporte físico |
+| **Dependencias** | Servidores, equipos de red, sistemas de almacenamiento, aplicaciones y datos alojados |
+
+## 2. Clasificación de la Amenaza (Catálogo MAGERIT)
+
+| Campo | Valor |
+|-------|-------|
+| **Categoría** | [N] Desastres Naturales |
+| **Código amenaza** | [N.1] Fuego / [N.2] Daños por agua |
+| **Amenaza específica** | **Inundación** |
+| **Origen** | Natural (no intencionada, no causada por fallo técnico) |
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Impacto | Justificación |
+|-----------|---------|----------------|
+| **Disponibilidad (D)** | 🔴 **Alto** | Pérdida total del servicio si el CPD queda inoperativo |
+| **Integridad (I)** | 🟡 Medio | Posible corrupción de datos por fallo abrupto de sistemas |
+| **Confidencialidad (C)** | 🟢 Bajo | No es el vector principal, salvo robo físico durante evacuación de emergencia |
+| **Autenticidad (A)** | 🟢 Bajo | No aplica directamente |
+| **Trazabilidad (T)** | 🟡 Medio | Pérdida de logs si no hay réplica externa |
+
+## 4. Valoración del Riesgo
+
+### Probabilidad
+- **Factor**: Ya existe evidencia documentada de riesgo de inundación en la zona
+- **Valoración**: **Media-Alta** (depende de frecuencia histórica, cercanía a cauces, estudios geológicos/hidrológicos)
+
+### Impacto potencial
+- **Valoración**: **Muy Alto** (Crítico)
+- Justificación: Puede implicar pérdida total de infraestructura, no solo interrupción temporal
+
+### Nivel de Riesgo
+```
+Riesgo = Probabilidad × Impacto
+Riesgo = Media-Alta × Muy Alto = CRÍTICO
+```
+
+## 5. Salvaguardas Recomendadas (Catálogo MAGERIT)
+
+| Código | Salvaguarda | Tipo |
+|--------|-------------|------|
+| **[N.2]** | Reubicación o análisis de relocalización del CPD | Preventiva |
+| **[G.19]** | Sistemas de detección de inundación/humedad | Detectiva |
+| **[G.20]** | Sistemas de bombeo/drenaje automático | Preventiva |
+| **[BC]** | Plan de Continuidad de Negocio (DRP) | Correctiva |
+| **[BC.2]** | CPD alternativo/redundante (site secundario) en zona sin riesgo | Preventiva |
+| **[G.10]** | Elevación de equipos críticos (falso suelo elevado) | Preventiva |
+| **[COM]** | Seguro de continuidad de negocio | Transferencia |
+
+## 6. Recomendación de Tratamiento
+
+⚠️ **Prioridad: URGENTE**
+
+Dado que el riesgo está **documentado y conocido**, la organización tiene la obligación de:
+1. Realizar un **Análisis de Impacto en el Negocio (BIA)** específico
+2. Evaluar **mitigar, transferir o evitar** (nunca aceptar sin justificación, dado el nivel crítico)
+3. Documentar la decisión en el marco del **Sistema de Gestión de Continuidad de Negocio**
+
+¿Deseas que desarrolle la matriz de riesgo cuantitativa (con valores numéricos) o el plan de tratamiento detallado?
+
+================================================================================
+Caso C07 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo
+
+- Familia de amenaza (Catálogo MAGERIT): Fenómenos naturales – Inundación.
+- Tipo de riesgo: Físico/ambiental sobre la ubicación del CPD.
+
+Activos afectados
+- Primarios: Servicios de negocio alojados en el CPD.
+- De soporte: Instalaciones del CPD (edificio/sala), energía, climatización, comunicaciones, hardware, almacenamiento/soportes, sistemas de backup.
+
+Dimensiones comprometidas (degradación típica)
+- Disponibilidad: Muy alta (4–5/5) por parada prolongada.
+- Integridad: Alta (4/5) por daño físico en equipos/soportes.
+- Confidencialidad: Media (2–3/5) por posible exposición de soportes dañados.
+- Autenticidad: Baja–Media (1–2/5) indirecta.
+- Trazabilidad: Alta (4/5) por pérdida de registros y auditoría.
+
+Probabilidad y nivel de riesgo (estimación inicial)
+- Probabilidad: Media–Alta, dado “riesgo de inundación documentado” (a precisar con mapas de peligro/periodo de retorno y cota del CPD).
+- Impacto: Muy Alto (afecta a múltiples activos críticos y a la continuidad).
+- Riesgo inherente estimado: Alto/Muy Alto.
+
+Observaciones para afinar la valoración
+- Periodo de retorno y altura de lámina prevista, cota del suelo del CPD, drenaje/barreras existentes, histórico de eventos, seguros y capacidades de continuidad/DRP (sitio alterno, replicación geográfica).
+
+================================================================================
+Caso C07 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, este riesgo se clasificaría de la siguiente manera:
+
+* **Tipo de riesgo**: Riesgo físico
+* **Categoría de riesgo**: Riesgo de disponibilidad
+* **Descripción del riesgo**: El Centro de Procesamiento de Datos (CPD) principal se encuentra ubicado en una zona con riesgo de inundación documentado, lo que podría provocar daños físicos en los equipos y sistemas, afectando la disponibilidad de los servicios y la integridad de la información.
+* **Impacto potencial**: Alto
+ + **Disponibilidad**: Alto (pérdida de acceso a los sistemas y servicios)
+ + **Integridad**: Medio (posible daño a los equipos y sistemas, lo que podría afectar la integridad de la información)
+ + **Confidencialidad**: Bajo (no se espera un impacto directo en la confidencialidad de la información)
+* **Probabilidad de ocurrencia**: Medio (el riesgo de inundación está documentado, pero no se puede predecir con certeza cuándo ocurrirá)
+* **Nivel de riesgo**: Medio-Alto (debido a la combinación de un impacto potencial alto y una probabilidad de ocurrencia media)
+
+En resumen, este riesgo se clasificaría como un riesgo físico de disponibilidad con un nivel de riesgo medio-alto, ya que la ubicación del CPD en una zona con riesgo de inundación documentado podría provocar daños físicos y afectar la disponibilidad de los servicios y la integridad de la información.
+
+================================================================================
+Caso C08 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según Metodología MAGERIT
+
+## 1. Identificación del Activo Afectado
+
+| Tipo de Activo | Descripción |
+|---|---|
+**[HW]** Hardware | Servidores, equipos de red, sistemas de almacenamiento |
+**[AUX]** Equipamiento auxiliar | Sistema de Alimentación Ininterrumpida (SAI), generadores |
+**[L]** Instalaciones | CPD / Sala de servidores |
+**[S]** Servicios | Servicios críticos de negocio dependientes de TI |
+
+## 2. Clasificación de la Amenaza
+
+Según el catálogo de amenazas de MAGERIT (Libro II):
+
+**Categoría: [N] Desastres Naturales / [I] De origen industrial**
+
+| Código MAGERIT | Amenaza | Aplicabilidad |
+|---|---|---|
+| **[I.6]** | Corte del suministro eléctrico | ✅ **Amenaza principal** |
+| [N.*] | Desastres naturales (si es la causa raíz) | Posible causa concatenada |
+| [I.5] | Avería de origen físico o lógico | Relacionada (fallo del SAI) |
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Justificación |
+|---|---|---|
+| **Disponibilidad [D]** | 🔴 **CRÍTICA** | Impacto directo - caída de servicios |
+| Integridad [I] | 🟡 Media | Riesgo de corrupción de datos por corte abrupto |
+| Confidencialidad [C] | ⚪ Baja | No aplica directamente |
+| Autenticidad [A] | ⚪ Baja | No aplica directamente |
+| Trazabilidad [T] | 🟡 Media | Pérdida de logs no persistidos |
+
+## 4. Análisis de Vulnerabilidad
+
+**Vulnerabilidad identificada:**
+> Dimensionamiento inadecuado del SAI (Sistema de Alimentación Ininterrumpida) — insuficiente autonomía/capacidad para sostener servicios críticos durante el tiempo necesario hasta restablecimiento del suministro o activación de generador.
+
+## 5. Estimación del Riesgo
+
+### Frecuencia (Probabilidad)
+- **Media-Alta**, dependiendo de la zona geográfica y calidad de la red eléctrica
+- Valoración típica: **2-3** (escala 1-5, siendo cortes "normales" varias veces/año)
+
+### Impacto Potencial
+
+| Nivel | Consecuencia |
+|---|---|
+| Alto | Interrupción de servicios críticos de negocio |
+| Alto | Pérdidas económicas por SLA incumplidos |
+| Medio-Alto | Posible pérdida/corrupción de datos en transacciones |
+| Medio | Daño reputacional |
+| Medio | Posible daño físico a equipos (apagados no controlados) |
+
+### **Nivel de Riesgo: 🔴 ALTO / CRÍTICO**
+
+## 6. Salvaguardas Recomendadas (Controles)
+
+| Código | Salvaguarda | Descripción |
+|---|---|---|
+| **[AUX.suministro_electrico]** | Dimensionamiento SAI | Redimensionar según carga real + margen de crecimiento |
+| **[AUX.generador]** | Generador de respaldo | Implementar/verificar generador diesel autónomo |
+| **[BC.RD]** | Plan de Recuperación ante Desastres | Procedimientos documentados de recuperación |
+| **[BC.DRP]** | Sitio alternativo | DRP con datacenter secundario (activo-pasivo) |
+| **[D.I.9]** | Monitorización continua | Alertas tempranas de estado del SAI/UPS |
+| **[G.19]** | Mantenimiento preventivo | Pruebas periódicas de autonomía real del SAI |
+| **[H.14]** | Apagado ordenado | Sistemas de shutdown automático gracioso |
+
+## 7. Recomendación de Tratamiento
+
+**Estrategia:** 🎯 **MITIGAR** (reducir probabilidad e impacto mediante controles)
+
+```
+Prioridad: ALTA
+Plazo recomendado: Corto plazo (< 3 meses)
+Justificación: Afecta disponibilidad de servicios críticos,
+                con alta probabilidad de ocurrencia
+```
+
+¿Deseas que profundice en el cálculo cuantitativo del riesgo residual o en un análisis de coste-beneficio de las salvaguardas propuestas?
+
+================================================================================
+Caso C08 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Amenaza (catálogo MAGERIT): Interrupción del suministro eléctrico (fallo de servicios de soporte/energía).
+- Naturaleza: No intencionada (accidental), origen externo/infraestructural; desencadenante: corte prolongado sin autonomía eléctrica suficiente.
+- Vulnerabilidad destacada: Ausencia o dimensionamiento insuficiente de SAI para sostener servicios críticos; inexistencia de generador/segunda acometida.
+- Activos afectados: CPD e infraestructura (SAIs, PDUs, climatización), servidores, almacenamiento, redes y comunicaciones, sistemas críticos de negocio.
+- Dimensiones de seguridad impactadas:
+  - Disponibilidad: Muy alta (servicios críticos caen).
+  - Integridad: Baja–Media (riesgo de corrupción por apagado brusco).
+  - Trazabilidad: Media (pérdida de logs/monitores durante el corte).
+  - Confidencialidad: Baja (no es el vector principal).
+  - Autenticidad: Baja (afectación indirecta por reinicios).
+- Probabilidad (orientativa, a ajustar por contexto e histórico local): Media–Alta al carecer de autonomía eléctrica adecuada.
+- Impacto (orientativo): Alto–Crítico en servicios críticos (interrupción operativa, posibles daños en hardware, SLA, sanciones/penalizaciones).
+- Nivel de riesgo inherente (Probabilidad x Impacto): Alto–Crítico.
+- Salvaguardas MAGERIT recomendadas:
+  - SAI dimensionado para la carga crítica y autonomía requerida; segmentación de cargas críticas/no críticas.
+  - Grupo electrógeno con capacidad y combustible garantizados; doble acometida eléctrica si es viable.
+  - Mantenimiento y pruebas periódicas de SAI/generador; monitorización y alertas de energía.
+  - Procedimientos de parada/arranque controlado; priorización de servicios críticos.
+  - Continuidad/contingencia: redundancia geográfica, replicación, pruebas de BCP/DRP y acuerdos con el suministrador eléctrico.
+
+================================================================================
+Caso C08 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), el riesgo que describes se puede clasificar de la siguiente manera:
+
+**Identificador del riesgo:** Riesgo de disponibilidad de servicios críticos debido a corte de suministro eléctrico prolongado.
+
+**Descripción del riesgo:** El corte de suministro eléctrico prolongado sin un Sistema de Alimentación Ininterrumpida (SAI) dimensionado para mantener los servicios críticos puede provocar la interrupción de los servicios informáticos y de comunicaciones, lo que puede tener un impacto significativo en la organización.
+
+**Categoría del riesgo:** Riesgo de Disponibilidad (D)
+
+**Nivel de probabilidad:** Alto (A)
+
+* Justificación: Un corte de suministro eléctrico prolongado puede ocurrir debido a diversas causas, como fallos en la red de suministro, accidentes, mantenimiento no planificado, etc. La falta de un SAI dimensionado aumenta la probabilidad de que el corte de suministro eléctrico tenga un impacto significativo en los servicios críticos.
+
+**Nivel de impacto:** Alto (A)
+
+* Justificación: La interrupción de los servicios críticos puede tener un impacto significativo en la organización, incluyendo pérdidas financieras, daño a la reputación, pérdida de productividad, etc.
+
+**Valor del riesgo:** 12 (Alto)
+
+* Cálculo: Nivel de probabilidad (A) x Nivel de impacto (A) = 12
+
+**Recomendaciones de tratamiento del riesgo:**
+
+1. Implementar un SAI dimensionado para mantener los servicios críticos en caso de corte de suministro eléctrico prolongado.
+2. Realizar un análisis de la infraestructura eléctrica y de los sistemas de alimentación para identificar posibles debilidades y mejorar la disponibilidad de los servicios críticos.
+3. Desarrollar un plan de continuidad de negocios que incluya procedimientos para la recuperación de los servicios críticos en caso de corte de suministro eléctrico prolongado.
+
+Es importante tener en cuenta que la clasificación del riesgo puede variar dependiendo de la organización y del contexto específico en el que se encuentra. Es fundamental realizar un análisis detallado y personalizado para determinar el nivel de riesgo y las recomendaciones de tratamiento más adecuadas.
+
+================================================================================
+Caso C09 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según MAGERIT
+
+## 1. Identificación del Activo
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[HW] Equipos informáticos** | Portátil corporativo |
+| **[D] Datos/Información** | Información de clientes (activo esencial afectado) |
+
+## 2. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Justificación |
+|---|---|---|
+| **Confidencialidad (C)** | 🔴 **CRÍTICA** | Datos accesibles en claro al no existir cifrado |
+| **Disponibilidad (D)** | 🟡 Media | Pérdida del equipo y su información local |
+| **Integridad (I)** | 🟢 Baja | No hay evidencia de alteración de datos |
+| **Autenticidad (A)** | 🟡 Media | Posible suplantación si hay credenciales guardadas |
+| **Trazabilidad (T)** | 🟢 Baja | No aplica directamente |
+
+## 3. Clasificación de la Amenaza
+
+**Código MAGERIT:** `[E.19] Fugas de información` / `[A.11] Acceso no autorizado`
+
+**Origen:** [A] Ataques intencionados / [E] Errores y fallos no intencionados (según causa)
+
+**Tipo de amenaza:**
+- **Categoría:** Ataques intencionados
+- **Subcategoría:** `[A.25] Robo` (amenaza primaria - causa)
+- **Amenaza derivada:** `[A.11] Acceso no autorizado a la información`
+- **Amenaza consecuente:** `[E.19] Fugas de información`
+
+## 4. Vulnerabilidad Identificada
+
+⚠️ **Ausencia de cifrado de disco (control técnico deficiente)**
+- Permite acceso directo a la información sin autenticación
+- Convierte un incidente de disponibilidad en uno crítico de confidencialidad
+
+## 5. Valoración del Riesgo
+
+| Factor | Valoración | Justificación |
+|---|---|---|
+| **Probabilidad** | Media-Alta | Robos de equipos son frecuentes (movilidad, espacios públicos) |
+| **Impacto** | 🔴 **Muy Alto** | Datos de clientes = información sensible/personal (RGPD/LOPDGDD) |
+| **Riesgo resultante** | 🔴 **CRÍTICO** | Probabilidad media/alta × Impacto muy alto |
+
+## 6. Consecuencias Potenciales
+
+- ⚖️ Sanciones regulatorias (RGPD - hasta 20M€ o 4% facturación)
+- 📉 Pérdida de reputación y confianza del cliente
+- 💰 Costes de notificación de brecha (AEPD + afectados en 72h)
+- 🔓 Posible uso fraudulento de datos personales
+
+## 7. Salvaguardas Recomendadas (Tratamiento)
+
+| Código MAGERIT | Salvaguarda | Prioridad |
+|---|---|---|
+| `[H.6] Cifrado de la información` | Implementar cifrado de disco completo (BitLocker, FileVault, LUKS) | 🔴 Inmediata |
+| `[NEW.7] Gestión de dispositivos móviles` | Política MDM con borrado remoto | Alta |
+| `[PS.3] Concienciación] ` | Formación en seguridad física del equipo | Media |
+| `[BC.2] Copias de seguridad` | Backup regular para minimizar pérdida de disponibilidad | Media |
+| `[COM.2] Autenticación] ` | Autenticación multifactor en el equipo | Alta |
+
+## 8. Conclusión
+
+Este riesgo debe tratarse como **prioridad crítica** dado que la ausencia de cifrado transforma un simple robo físico (pérdida de disponibilidad) en una **violación grave de confidencialidad**, con implicaciones legales significativas al tratarse de datos de clientes.
+
+================================================================================
+Caso C09 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Activos
+  - Primarios: Información de clientes (datos personales/confidenciales), servicios que la usan.
+  - De soporte: Portátil (equipo endpoint), sistema operativo, aplicaciones, credenciales almacenadas, red/MDM, usuario.
+
+- Amenaza (catálogo MAGERIT v3)
+  - Robo/hurto o pérdida de equipos/soportes de información (amenaza deliberada física). El hecho de no cifrar el disco incrementa la exposición.
+
+- Vulnerabilidades relevantes
+  - Ausencia de cifrado completo de disco.
+  - Almacenamiento local de datos sensibles y/o credenciales en claro o recuperables.
+  - Falta de controles físicos (anclaje, custodia), MDM/borrado remoto, arranque seguro/TPM, bloqueo de sesión.
+
+- Dimensiones afectadas (impacto estimado)
+  - Confidencialidad: Muy alto (exposición directa de datos).
+  - Integridad: Medio (posible alteración de datos/credenciales).
+  - Disponibilidad: Medio (pérdida del equipo y del trabajo local no sincronizado).
+  - Autenticidad: Alto (uso indebido de credenciales/tokens almacenados).
+  - Trazabilidad: Medio-Alto (posible pérdida/alteración de registros locales y suplantación).
+
+- Probabilidad
+  - Media-Alta (portátil móvil y sin cifrado incrementa la materialización y el compromiso de C).
+
+- Nivel de riesgo inherente
+  - Alto/Muy Alto, especialmente si hay datos personales o sensibles (riesgo legal RGPD/LOPDGDD, sanciones y daño reputacional).
+
+- Salvaguardas (tratamiento recomendado)
+  - Cifrado completo de disco con TPM/arranque seguro y gestión de claves.
+  - MDM/EDR con borrado remoto, geolocalización y bloqueo.
+  - Política de no almacenar datos sensibles en local; sincronización/backup seguro.
+  - Bloqueo de pantalla, contraseñas robustas y MFA; evitar autologin/credenciales en claro.
+  - DLP y endurecimiento del endpoint; registro/inventario y etiquetado; medidas físicas (anclajes, custodia).
+  - Formación al usuario y procedimiento de notificación/gestión de incidentes y brechas.
+
+================================================================================
+Caso C09 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, el riesgo de robo físico de un portátil sin cifrado de disco que contiene información de clientes se puede clasificar de la siguiente manera:
+
+**Identificación del activo**: El activo en cuestión es la información de clientes almacenada en el portátil.
+
+**Valor del activo**: El valor del activo es alto, ya que la información de clientes es confidencial y sensible.
+
+**Amenaza**: La amenaza es el robo físico del portátil.
+
+**Vulnerabilidad**: La vulnerabilidad es la falta de cifrado de disco en el portátil, lo que permite el acceso no autorizado a la información de clientes en caso de robo.
+
+**Impacto**: El impacto sería alto, ya que el robo de la información de clientes podría suponer una violación de la privacidad y la confidencialidad de los clientes, lo que podría tener consecuencias legales y financieras para la organización.
+
+**Probabilidad**: La probabilidad de que ocurra el robo físico del portátil es moderada, ya que depende de factores como la seguridad física del lugar donde se encuentra el portátil y la vigilancia de los empleados.
+
+**Nivel de riesgo**: Según la matriz de riesgos de MAGERIT, el nivel de riesgo sería:
+
+* Impacto: Alto (I)
+* Probabilidad: Moderada (M)
+* Nivel de riesgo: Alto (I x M = Alto)
+
+**Clasificación del riesgo**: El riesgo se clasificaría como "Alto" según la escala de riesgos de MAGERIT, lo que requiere la implementación de medidas de control y mitigación para reducir el riesgo a un nivel aceptable.
+
+**Medidas de control y mitigación**: Algunas medidas de control y mitigación que se podrían implementar para reducir el riesgo son:
+
+* Cifrado de disco en el portátil
+* Uso de autenticación de dos factores para acceder al portátil
+* Implementación de un sistema de seguimiento y recuperación de portátiles robados
+* Capacitación a los empleados sobre la importancia de la seguridad física y la protección de la información de clientes
+* Revisión y actualización de las políticas de seguridad de la organización para incluir medidas de control y mitigación para el robo de portátiles.
+
+================================================================================
+Caso C10 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación MAGERIT: Ataque DDoS en Campaña de Ventas
+
+## 1. Identificación del Activo Afectado
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[S] Servicios** | Servicio web corporativo / e-commerce |
+| **[SW] Software** | Aplicación web, servidor web (Apache/Nginx/IIS) |
+| **[HW] Hardware** | Servidores, balanceadores de carga |
+| **[COM] Comunicaciones** | Ancho de banda, conexión a Internet |
+
+## 2. Clasificación de la Amenaza
+
+Según el catálogo de amenazas MAGERIT:
+
+**[A.24] Denegación de servicio**
+- *Categoría:* Ataques intencionados
+- *Origen:* Atacante externo (humano, causa deliberada)
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Justificación |
+|---|---|---|
+| **Disponibilidad [D]** | 🔴 **CRÍTICA** | Impacto directo y principal - caída del servicio |
+| Confidencialidad [C] | ⚪ No afectada | No hay exfiltración de datos |
+| Integridad [I] | ⚪ No afectada | No hay alteración de información |
+| Autenticidad [A] | ⚪ No afectada | No aplica en este vector |
+| Trazabilidad [T] | 🟡 Baja | Logs pueden saturarse durante el ataque |
+
+## 4. Valoración del Riesgo
+
+### Probabilidad (Frecuencia)
+🔴 **ALTA** — Los DDoS son ataques frecuentes, herramientas accesibles, y las campañas de ventas son objetivos predecibles (mayor visibilidad, motivación económica del atacante, competencia desleal, extorsión).
+
+### Impacto
+🔴 **MUY ALTO** — Coincide con periodo de máxima criticidad del negocio:
+- Pérdida directa de ingresos por ventas no realizadas
+- Daño reputacional (clientes migran a competencia)
+- Incumplimiento de SLA con partners/marketplace
+- Costes de mitigación de emergencia
+
+### Nivel de Riesgo
+```
+RIESGO = PROBABILIDAD (Alta) × IMPACTO (Muy Alto) = CRÍTICO 🔴
+```
+
+## 5. Salvaguardas Recomendadas (MAGERIT)
+
+| Código | Salvaguarda | Tipo |
+|---|---|---|
+| **[D]** | Servicio anti-DDoS (Cloudflare, AWS Shield, Akamai) | Preventiva |
+| **[D]** | CDN para distribuir carga | Preventiva |
+| **[D]** | Escalado automático (auto-scaling) | Preventiva |
+| **[D]** | WAF (Web Application Firewall) | Preventiva |
+| **[D]** | Rate limiting / throttling | Preventiva |
+| **[D]** | Plan de continuidad de negocio (BCP) | Correctiva |
+| **[D]** | Monitorización 24/7 en periodo de campaña | Detectiva |
+| **[D]** | Contrato SLA con proveedor de mitigación | Contractual |
+
+## 6. Recomendación de Tratamiento
+
+⚠️ **MITIGAR** — Dado el impacto crítico en periodo de negocio clave, se recomienda:
+1. Reforzar capacidad de mitigación **antes** de la campaña (no reactivo)
+2. Pruebas de estrés previas al periodo de alto tráfico
+3. Plan de respuesta a incidentes específico para esta ventana temporal
+
+================================================================================
+Caso C10 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Identificador del riesgo: R-DDoS-001
+- Activo primario afectado: Servicio web corporativo (canal de ventas online)
+- Activos de soporte: Frontales web, balanceadores, WAF/CDN, plataforma cloud/on‑prem, cortafuegos, DNS, enlaces/ISP
+- Tipo de amenaza (catálogo MAGERIT): Acción deliberada – Denegación de servicio (DoS/DDoS) desde Internet
+- Fuente y vector: Atacantes externos/botnet, tráfico volumétrico L3/L4 y/o L7
+- Dimensiones de seguridad afectadas:
+  - Disponibilidad: Muy alta (crítica)
+  - Trazabilidad: Media (posible pérdida/saturación de logs)
+  - Autenticidad/Integridad: Baja
+  - Confidencialidad: Baja o nula
+- Impacto (en campaña de ventas): Muy Alto/Crítico (interrupción de ventas, penalizaciones por SLA, reputación)
+- Probabilidad: Alta en periodo de campaña; Media fuera de campaña
+- Nivel de riesgo (matriz MAGERIT): Crítico/Muy Alto en campaña de ventas → No aceptable; requiere tratamiento
+- Principales vulnerabilidades: Capacidad limitada de absorción, ausencia/insuficiencia de anti‑DDoS, dependencia de un único ISP/DNS, falta de redundancia/autoescalado, reglas L7 no optimizadas
+- Salvaguardas recomendadas (MAGERIT: preventivas, detectivas, reactivas):
+  - Preventivas: Servicio anti‑DDoS (ISP/nube/scrubbing), CDN/Anycast, WAF con protección L7, rate‑limiting y hardening TCP, protección DNS (Anycast), autoscaling/over‑provisioning, pruebas de capacidad
+  - Detectivas: Monitorización 24x7 (NetFlow, PPS/RPS, errores 5xx, latencia), umbrales y alertas
+  - Reactivas: Plan/respuesta DDoS y runbooks, conmutación a modo degradado/estático, coordinación con ISP/scrubbing, ejercicios de simulación
+- Criterio de aceptación: No aceptable en campaña; mitigación prioritaria o transferencia parcial (SLA con proveedor anti‑DDoS)
+
+================================================================================
+Caso C10 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT, para clasificar el riesgo de un ataque de denegación de servicio distribuido (DDoS) contra la web corporativa en período de campaña de ventas, debemos considerar los siguientes factores:
+
+1. **Impacto**: El impacto de un ataque DDoS en la web corporativa durante un período de campaña de ventas podría ser alto, ya que podría provocar:
+ * Pérdida de ingresos debido a la indisponibilidad del sitio web.
+ * Daño a la reputación de la empresa.
+ * Pérdida de confianza de los clientes.
+ * Posibles pérdidas de datos o información confidencial.
+2. **Probabilidad**: La probabilidad de un ataque DDoS es moderada, ya que:
+ * Los ataques DDoS son comunes y pueden ser lanzados por cualquier persona con acceso a Internet.
+ * La web corporativa es un objetivo atractivo para los atacantes, especialmente durante períodos de alta actividad como campañas de ventas.
+3. **Vulnerabilidad**: La vulnerabilidad de la web corporativa a un ataque DDoS depende de la efectividad de las medidas de seguridad implementadas, como:
+ * Firewalls y sistemas de detección de intrusos.
+ * Sistemas de protección contra DDoS.
+ * Capacidades de escalado y redundancia.
+
+Considerando estos factores, el riesgo de un ataque DDoS contra la web corporativa en período de campaña de ventas podría ser clasificado como:
+
+* **Nivel de riesgo**: ALTO
+* **Categoría de riesgo**: RIESGO DE DISPONIBILIDAD Y ACCESIBILIDAD
+* **Descripción del riesgo**: Ataque de denegación de servicio distribuido (DDoS) contra la web corporativa en período de campaña de ventas, que podría provocar pérdidas de ingresos, daño a la reputación y pérdida de confianza de los clientes.
+
+Es importante tener en cuenta que la clasificación del riesgo puede variar dependiendo de la evaluación específica de la situación y de las medidas de seguridad implementadas por la empresa.
+
+================================================================================
+Caso C11 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación de Riesgo según MAGERIT
+
+## Identificación del Escenario
+
+| Elemento | Descripción |
+|----------|-------------|
+| **Activo afectado** | [S] Servicios / [SW] Aplicaciones informáticas / [D] Datos (instancia de producción en cloud) |
+| **Amenaza** | Error del administrador |
+| **Origen** | Accidental (no intencionado) |
+
+---
+
+## 1. Tipo de Amenaza (Catálogo MAGERIT)
+
+**[E] Errores y fallos no intencionados**
+
+### Código específico:
+> **[E.4] Errores de configuración**
+> **[E.19] Fugas de información** (si aplica pérdida de confidencialidad)
+> **[E.15] Alteración accidental de la información**
+> Principalmente: **[E.20] Vulnerabilidades de los programas (software)** — *No aplica directamente*
+
+**Código más preciso:**
+### **[E.4] Errores de configuración** y/o **[E.28] Indisponibilidad del personal** — *No aplica*
+
+**Clasificación correcta según catálogo estándar de amenazas MAGERIT:**
+
+| Código | Amenaza |
+|--------|---------|
+| **[E.1]** | Errores de los usuarios |
+| **[E.2]** | Errores del administrador ⭐ (el más específico) |
+| **[E.15]** | Alteración accidental de la información |
+| **[E.18]** | Destrucción de información |
+
+---
+
+## 2. Dimensiones de Seguridad Afectadas (según valoración de activos)
+
+| Dimensión | Afectación | Nivel |
+|-----------|-----------|-------|
+| **[D] Disponibilidad** | 🔴 **CRÍTICA** — Servicio inaccesible | Alta |
+| **[I] Integridad** | 🟡 Media — Si hay pérdida de datos no respaldados | Media |
+| **[C] Confidencialidad** | ⚪ No aplica directamente | N/A |
+| **[A] Autenticidad** | ⚪ No aplica | N/A |
+| **[T] Trazabilidad** | 🟢 Baja — Puede rastrearse el log de quién lo hizo | Baja |
+
+---
+
+## 3. Valoración del Riesgo
+
+### Probabilidad (Frecuencia)
+- **Media-Alta**: Errores humanos son frecuentes en operaciones cloud sin controles adecuados (MTBF bajo si no hay MFA para acciones destructivas)
+
+### Impacto
+- **Alto/Crítico**: 
+  - Interrupción del servicio en horario laboral (máximo impacto en continuidad de negocio)
+  - Posible pérdida de datos si no hay backups recientes
+  - Impacto reputacional y económico
+
+### **Nivel de Riesgo: 🔴 ALTO**
+
+---
+
+## 4. Salvaguardas Recomendadas (Catálogo MAGERIT)
+
+| Categoría | Salvaguarda |
+|-----------|-------------|
+| **[H] Protección de servicios** | Confirmación en dos pasos para acciones destructivas |
+| **[BC] Continuidad del negocio** | Backups automatizados y snapshots regulares |
+| **[G] Organizativas** | Segregación de funciones (SoD) — no un solo admin con permisos totales |
+| **[G] Organizativas** | Política de "least privilege" (mínimo privilegio) |
+| **[H] Protección genérica** | Retención/versionado (ej. S3 versioning, snapshots inmutables) |
+| **[H] Protección genérica** | Ambientes protegidos: tags de "producción" con restricciones (IAM policies) |
+| **[G] Organizativas** | Procedimientos de cambio (Change Management / CAB) |
+
+---
+
+## Resumen Ejecutivo
+
+```
+Amenaza:        [E.2] Errores del administrador
+Vector:         Error humano/operacional
+Activo crítico: Servicio cloud en producción
+Impacto:        Disponibilidad (crítico) + posible Integridad
+Riesgo inicial: ALTO
+Riesgo residual (con controles): MEDIO-BAJO
+```
+
+**Recomendación:** Implementar controles preventivos (MFA para delete, aprobaciones dobles) y controles de recuperación (backups + DR plan) para mitigar tanto la probabilidad como el impacto.
+
+================================================================================
+Caso C11 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Activo afectado: Instancia de producción del servicio cloud (cómputo, volúmenes/BD, configuración y orquestación asociadas).
+- Agente de amenaza: Personal interno autorizado (administrador).
+- Tipo de amenaza (catálogo MAGERIT): Error humano no intencional en operación/administración (borrado/alteración accidental de sistemas o información).
+- Vulnerabilidades típicas: Permisos excesivos; ausencia de protección contra borrado/terminación; falta de segregación de funciones y entornos; carencia de doble control y gestión de cambios; backups/recuperación insuficientes.
+- Dimensiones afectadas:
+  - Disponibilidad: Muy alta degradación (servicio caído en horario laboral).
+  - Integridad: Alta (pérdida/corrupción de datos y configuraciones).
+  - Trazabilidad: Media (si se pierden logs locales).
+  - Confidencialidad: Baja/ninguna (no es el efecto principal).
+- Impacto: 4/5 (Alto–Muy Alto) por ser producción y en horario laboral.
+- Probabilidad: 3/5 (Media; puede subir si faltan salvaguardas).
+- Nivel de riesgo inherente: 12/25 → Alto.
+
+Controles recomendados (MAGERIT: preventivos/detectivos/correctivos)
+- Preventivos: mínimo privilegio e IAM con condiciones; doble control/aprobación para borrados; segregación de entornos/funciones; locks/termination protection/retention policies; políticas organizativas (SCP/Policy); gestión de cambios y ventanas; IaC con revisiones.
+- Detectivos: logging de actividad (CloudTrail/Activity Log) y alertas ante delete/terminate.
+- Correctivos: backups/snapshots inmutables y probados, versionado/PITR, runbooks de recuperación, HA/DR con RTO/RPO definidos.
+
+================================================================================
+Caso C11 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), el riesgo que describes se puede clasificar de la siguiente manera:
+
+* **Tipo de riesgo**: Riesgo de disponibilidad (pérdida de acceso a la información o a los servicios)
+* **Causa**: Error humano (acción no intencionada del administrador)
+* **Fuente**: Interna (el administrador es un empleado de la organización)
+* **Impacto**:
+ + **Confidencialidad**: No afectada (no se ha producido una pérdida de información confidencial)
+ + **Integridad**: No afectada (no se ha producido una modificación no autorizada de la información)
+ + **Disponibilidad**: Alta (la pérdida de la instancia de producción del servicio cloud puede afectar significativamente a la operación de la organización)
+* **Probabilidad**: Media (el error humano puede ocurrir en cualquier momento, pero es posible que se hayan implementado medidas para prevenir o minimizar este tipo de errores)
+* **Nivel de riesgo**: Alto (debido al impacto significativo en la disponibilidad del servicio y la probabilidad media de que ocurra)
+
+En cuanto a la clasificación del nivel de riesgo según MAGERIT, se puede asignar un nivel de riesgo de:
+
+* **Nivel de riesgo**: 3 (Alto) según la escala de MAGERIT, que va desde 1 (Bajo) hasta 4 (Muy Alto)
+
+Es importante tener en cuenta que esta clasificación es solo una aproximación y que el nivel de riesgo real puede variar dependiendo de la organización y del contexto específico en el que se produce el incidente.
+
+================================================================================
+Caso C12 - anthropic/claude-sonnet-5
+================================================================================
+# Análisis de Riesgo según Metodología MAGERIT
+
+## 1. Identificación del Activo
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[S] Servicios** | Servicio de autenticación federada (SSO) |
+| **[SW]** | Software del Identity Provider (IdP) externo |
+| **[D]** | Datos de identidad, credenciales, tokens, atributos federados |
+| **[COM]** | Canales de comunicación con el IdP (SAML/OAuth/OIDC) |
+| **[Servicios Dependientes]** | Todos los sistemas corporativos que confían en el IdP (Service Providers) |
+
+**Clasificación de dependencia:** Activo esencial (single point of failure) — Alta criticidad por efecto cascada.
+
+---
+
+## 2. Amenaza según Catálogo MAGERIT
+
+**Categoría:** [A] Ataques intencionados
+
+| Código MAGERIT | Amenaza |
+|---|---|
+| **[A.5]** | Suplantación de la identidad del usuario |
+| **[A.6]** | Abuso de privilegios de acceso |
+| **[A.11]** | Acceso no autorizado |
+| **[A.24]** | Denegación de servicio |
+| **[A.7]** | Uso no previsto (manipulación de tokens/sesiones) |
+
+*Origen:* Externo (proveedor tercero) — amenaza de **cadena de suministro (supply chain)**.
+
+---
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Impacto |
+|---|---|
+| **[C] Confidencialidad** | 🔴 Muy Alto — exposición de credenciales/identidades de todos los usuarios |
+| **[I] Integridad** | 🔴 Alto — posible modificación de tokens, atributos, roles |
+| **[D] Disponibilidad** | 🔴 Muy Alto — caída del IdP paraliza el acceso a *todos* los SP federados |
+| **[A] Autenticidad** | 🔴 Crítico — falsificación de identidad, bypass de MFA |
+| **[T] Trazabilidad** | 🟡 Medio-Alto — logs bajo control del tercero, posible manipulación |
+
+---
+
+## 4. Valoración del Riesgo
+
+### Probabilidad (Frecuencia)
+- **Media-Alta**: Los IdP externos son objetivos atractivos (ataques históricos: Okta 2022/2023, Microsoft Azure AD breaches)
+- Factor agravante: superficie de ataque fuera del control directo de la organización
+
+### Impacto
+- **Crítico / Catastrófico**
+- Efecto en cascada: compromete N servicios simultáneamente (amplificación del riesgo)
+- Posible movimiento lateral hacia todos los sistemas federados
+- Pérdida de confianza, incumplimiento normativo (GDPR, ISO 27001, ENS)
+
+### Nivel de Riesgo (Probabilidad × Impacto)
+```
+RIESGO = MUY ALTO / CRÍTICO
+```
+
+---
+
+## 5. Salvaguardas Recomendadas (MAGERIT)
+
+| Tipo | Salvaguarda |
+|---|---|
+| **[Preventiva]** | MFA resistente a phishing (FIDO2/WebAuthn) en el IdP |
+| **[Preventiva]** | Validación de firmas SAML/tokens, rotación de certificados |
+| **[Detección]** | Monitorización de anomalías de autenticación (SIEM/UEBA) |
+| **[Contingencia]** | IdP de respaldo o mecanismo de break-glass para acceso de emergencia |
+| **[Contractual]** | SLA de seguridad, derecho de auditoría al proveedor (due diligence) |
+| **[Reducción impacto]** | Segmentación: no todos los sistemas críticos dependientes del mismo IdP |
+| **[Reducción impacto]** | Sesiones de corta duración, revocación rápida de tokens |
+| **[Recuperación]** | Plan de continuidad (BCP/DRP) específico para fallo del SSO |
+
+---
+
+## 6. Conclusión
+
+Este riesgo representa una **amenaza sistémica de tipo "single point of failure"** con **impacto multiplicador**, típica de arquitecturas de identidad centralizadas. Debe tratarse con prioridad máxima en el análisis de riesgos, requiriendo controles compensatorios robustos y planes de contingencia, dado que la organización **no tiene control directo** sobre las salvaguardas internas del proveedor.
+
+================================================================================
+Caso C12 - openai/gpt-5
+================================================================================
+Propuesta de clasificación MAGERIT
+
+- Identificador del riesgo: R-SSI-EXT-01
+- Nombre: Compromiso del proveedor externo de identidad (SSO) que autentica los servicios corporativos
+- Familia de amenaza (MAGERIT v3):
+  - T4 Ataques deliberados:
+    - Intrusión/compromiso en sistemas del proveedor/tercero
+    - Suplantación de identidad y emisión de credenciales/tokens falsos
+    - Abuso de privilegios (cuentas/admin del IdP)
+  - Variante de continuidad: T3 Fallos/indisponibilidad de servicios de terceros (si el impacto es por caída del IdP)
+- Agentes de amenaza: Atacante externo; insider del proveedor; actor con credenciales privilegiadas comprometidas del IdP
+- Activos afectados:
+  - Primarios: Procesos de negocio y servicios corporativos que dependen de SSO; información accesible tras autenticación
+  - De soporte: Tenant del IdP externo, federaciones SAML/OIDC, claves de firma, directorio/atributos, apps integradas, red/DNS
+- Escenarios de materialización:
+  - Compromiso del tenant del IdP y emisión de tokens válidos para apps corporativas (acceso masivo no autorizado)
+  - Modificación de políticas/claims/roles que otorgan privilegios indebidos
+  - Indisponibilidad del IdP que bloquea el acceso a todos los servicios federados
+- Dimensiones de seguridad afectadas y degradación:
+  - Autenticidad: Muy grave (emisión/aceptación de identidades falsas)
+  - Confidencialidad: Muy grave (acceso transversal a datos)
+  - Integridad: Grave–Muy grave (manipulación de datos y permisos)
+  - Disponibilidad: Grave (indisponibilidad por caída o revocación de confianza)
+  - Trazabilidad: Grave (tokens falsos y registros poco fiables)
+- Alcance: Transversal a toda la organización que use ese SSO (alto efecto de propagación)
+- Impacto global (valor económico/operacional/legales): Muy alto
+- Probabilidad estimada: Media–Alta (proveedores IdP son objetivo frecuente; riesgo de cadena de suministro)
+- Nivel de riesgo inherente: Crítico/Muy alto
+
+Salvaguardas clave (MAGERIT: preventivas, detectivas y correctivas)
+- Organizativas/contractuales:
+  - Gobierno de terceros: due diligence, cláusulas de seguridad/BCP, derecho de auditoría, notificación de incidentes, RTO/RPO
+  - Requisitos al IdP: MFA resistente a phishing para admins, segregación de funciones, revisiones periódicas de configuración y accesos
+- Técnicas preventivas:
+  - Endurecimiento del tenant del IdP (PIM/JIT para privilegios, políticas anti-phishing, restricción de creación de apps)
+  - Validación estricta de tokens SAML/OIDC (issuer, audience, firma, exp/nbf, nonce), TTL corto, rotación/pinning de claves de firma
+  - Límites de alcance: mínimos privilegios, scopes reducidos, step-up/condicional por riesgo, segmentación de apps críticas con controles adicionales
+  - Continuidad: IdP secundario o mecanismo de autenticación de contingencia y cuentas “break-glass” locales
+- Detectivas:
+  - Monitorización centralizada de autenticaciones, cambios de metadata/JWKS, creación de apps, elevaciones de privilegios; UBA/UEBA para tokens/sesiones
+- Correctivas:
+  - Playbooks de revocación de confianza del IdP, rotación urgente de claves, bloqueo de federaciones afectadas, reenrolamiento de MFA y comunicación
+
+Riesgo residual (orientativo)
+- Con salvaguardas implantadas y probadas: Impacto Alto, Probabilidad Baja–Media → Riesgo residual Alto
+- Sin salvaguardas o con dependencia única del IdP: Riesgo residual Crítico
+
+================================================================================
+Caso C12 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), el riesgo que describes se puede clasificar de la siguiente manera:
+
+**Identificador del riesgo:** Compromiso del proveedor de identidad SSO externo
+
+**Descripción del riesgo:** El proveedor de identidad SSO (Single Sign-On) externo es comprometido, lo que permite a un atacante acceder a todos los servicios corporativos que utilizan esta autenticación.
+
+**Categoría del riesgo:** Acceso no autorizado
+
+**Impacto:** Alto
+
+* **Confidencialidad:** Alto (el atacante puede acceder a información confidencial de la empresa)
+* **Integridad:** Alto (el atacante puede modificar o eliminar información de la empresa)
+* **Disponibilidad:** Alto (el atacante puede afectar la disponibilidad de los servicios corporativos)
+
+**Probabilidad:** Media-Alta
+
+* **Vulnerabilidad:** Alta (el proveedor de identidad SSO externo es un punto único de fallo)
+* **Amenaza:** Media-Alta (un atacante puede intentar comprometer el proveedor de identidad SSO externo)
+
+**Nivel de riesgo:** Alto
+
+* **Valoración del riesgo:** 8/10 (considerando la alta impacto y la media-alta probabilidad)
+
+**Recomendaciones de mitigación:**
+
+1. Implementar un sistema de autenticación alternativo para los servicios corporativos.
+2. Realizar auditorías y pruebas de penetración regulares en el proveedor de identidad SSO externo.
+3. Establecer acuerdos de nivel de servicio (SLA) con el proveedor de identidad SSO externo para garantizar la respuesta rápida en caso de incidentes.
+4. Capacitar a los empleados sobre los riesgos de seguridad y la importancia de la autenticación segura.
+
+Es importante tener en cuenta que la clasificación del riesgo puede variar dependiendo de la específica situación y contexto de la empresa. Es recomendable realizar un análisis de riesgos más detallado y personalizado para determinar las medidas de mitigación más efectivas.
+
+================================================================================
+Caso C13 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según MAGERIT
+
+## 1. Identificación del Activo Afectado
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[P] Personas** | Directivos financieros (objetivo directo) |
+| **[D] Datos/Información** | Credenciales, información financiera, datos confidenciales |
+| **[S] Servicios** | Servicios de correo electrónico, banca online |
+| **[SW] Aplicaciones** | Cliente de correo, sistemas de autenticación |
+| **[COM] Comunicaciones** | Redes de comunicación corporativa |
+
+## 2. Clasificación de la Amenaza (Catálogo MAGERIT)
+
+**Categoría:** [A] Ataques Intencionados
+
+**Código específico:** **[A.30] Ingeniería social (phishing)**
+
+Relacionada también con:
+- **[A.5] Suplantación de la identidad del usuario**
+- **[A.11] Acceso no autorizado**
+- **[A.29] Extorsión** (si deriva en fraude/BEC)
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Justificación |
+|---|---|---|
+| **[C] Confidencialidad** | 🔴 Alta | Exposición de credenciales e información sensible |
+| **[I] Integridad** | 🔴 Alta | Posible modificación de transacciones/datos financieros |
+| **[A] Autenticidad** | 🔴 Muy Alta | Suplantación directa del directivo o de terceros |
+| **[T] Trazabilidad** | 🟡 Media | Dificultad para rastrear acciones fraudulentas |
+| **[D] Disponibilidad** | 🟢 Baja | Impacto indirecto (si deriva en ransomware) |
+
+## 4. Valoración del Riesgo
+
+### Probabilidad
+**Alta** — Los directivos financieros son objetivos de alto valor (CFO fraud/BEC es una de las técnicas más rentables para atacantes)
+
+### Impacto Potencial
+**Muy Alto**, considerando:
+- Fraude financiero (transferencias fraudulentas - BEC/CEO Fraud)
+- Robo de credenciales corporativas
+- Compromiso de cuentas para movimiento lateral
+- Filtración de información financiera sensible
+- Daño reputacional
+
+### Nivel de Riesgo
+🔴 **CRÍTICO**
+
+## 5. Salvaguardas Recomendadas (MAGERIT)
+
+| Código | Salvaguarda |
+|---|---|
+| **[H.IE]** | Formación y concienciación específica en ingeniería social |
+| **[NET.EM]** | Filtrado avanzado de correo (anti-phishing, DMARC, SPF, DKIM) |
+| **[IA]** | Autenticación multifactor (MFA) obligatoria |
+| **[COM.aut]** | Verificación fuera de banda para transferencias financieras |
+| **[D.I]** | Procedimientos de doble validación en pagos |
+| **[BC]** | Plan de respuesta a incidentes específico para BEC |
+| **[COM.mon]** | Monitorización de dominios similares (typosquatting) |
+
+## 6. Escenario de Riesgo Resumido
+
+```
+ESCENARIO: [A.30] Spear Phishing a Directivos Financieros
+├── Vector de entrada: Correo electrónico dirigido
+├── Activo primario: [P] Directivo financiero
+├── Activo secundario: [D] Datos financieros / [S] Servicios bancarios
+├── Dimensión crítica: [A] Autenticidad
+├── Probabilidad: Alta (4/5)
+├── Impacto: Muy Alto (5/5)
+└── Riesgo residual esperado: Depende de madurez en salvaguardas técnicas y humanas
+```
+
+¿Deseas que desarrolle una **matriz de riesgo cuantitativa** con valores numéricos según la metodología MAGERIT v3, o un **plan de tratamiento** específico para este riesgo?
+
+================================================================================
+Caso C13 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo: Campaña de spear phishing contra directivos financieros
+
+- Familia de amenaza (MAGERIT): Ataques deliberados – Ingeniería social (phishing/spear phishing), suplantación de identidad y fraude (BEC/“fraude del CEO”).
+- Agente de amenaza: Ciberdelincuencia organizada con motivación económica y capacidad de personalización (OSINT, dominios look‑alike).
+- Activos afectados:
+  - Personas: Directivos financieros (CFO, tesorería, AP/AR).
+  - Información: Credenciales, datos financieros, órdenes de pago, información sensible de negocio.
+  - Servicios/Procesos: Autorización de pagos, tesorería, ERP/banqueo, correo corporativo.
+  - Aplicaciones/Infraestructura: Correo, MFA/IdP, ERP, pasarelas de email, dominios/brand.
+- Vulnerabilidades típicas:
+  - Concienciación insuficiente; presión/urgencia en aprobaciones.
+  - Ausencia o mala configuración de DMARC/SPF/DKIM; protección anti‑impersonación débil.
+  - Falta de MFA o sesión/OAuth mal gestionada; reglas de buzón maliciosas.
+  - Controles de negocio débiles: ausencia de doble verificación fuera de banda, segregación de funciones insuficiente, límites de pago laxos.
+- Dimensiones de seguridad MAGERIT afectadas (orientativo):
+  - Confidencialidad: Alta (captura de credenciales/datos).
+  - Integridad: Muy alta (manipulación de órdenes de pago).
+  - Disponibilidad: Baja/Media (secundaria salvo bloqueo de cuentas).
+  - Autenticidad: Muy alta (suplantación de remitente/identidad).
+  - Trazabilidad: Media (borrado/modificación de evidencias vía reglas).
+- Impactos potenciales:
+  - Económico directo: desvío de transferencias, pagos a cuentas fraudulentas.
+  - Legal/compliance: posibles brechas (protección de datos, auditoría).
+  - Reputacional: pérdida de confianza de socios/proveedores.
+  - Operacional: interrupción/retrabajos en ciclo de pagos y cierres.
+- Probabilidad estimada: Media–Alta (alto atractivo del colectivo financiero y elevada eficacia del spear phishing).
+- Nivel de riesgo (inicial): Alto (Impacto Alto x Probabilidad Media–Alta). Ajustar según valoración de activos y contexto de la organización.
+
+Salvaguardas recomendadas (MAGERIT – preventivas, detectivas, correctivas)
+- Preventivas:
+  - MFA robusta en correo/ERP/IdP; privilegios mínimos; revisión de reglas de buzón.
+  - Políticas y formación específica para directivos financieros (simulaciones dirigidas).
+  - Controles de negocio: doble verificación fuera de banda para pagos/IBAN, límites y segregación de funciones.
+  - Anti‑impersonación en correo: SPF/DKIM/DMARC (p=reject), protección de dominios look‑alike, banner de remitente externo.
+- Detectivas:
+  - Detección de BEC: anomalías de inicio de sesión (impossible travel), creación de reglas de reenvío, cambios de proveedor/IBAN, alertas SIEM/UEBA.
+  - Filtros avanzados anti‑phishing/URL sandboxing y verificación de adjuntos.
+- Correctivas/Respuesta:
+  - Playbooks de respuesta a BEC/phishing, revocación de sesiones/OAuth y reseteo de credenciales.
+  - Procedimiento de reversión de transferencias y notificación a bancos/proveedores.
+  - Preservación de evidencias y comunicación interna/externa.
+
+Notas: La valoración final debe ajustarse con el inventario y la valoración de activos, los controles existentes y el apetito de riesgo de la organización, conforme a la metodología MAGERIT.
+
+================================================================================
+Caso C13 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información), clasificaría este riesgo de la siguiente manera:
+
+**Identificador del riesgo:** Riesgo de suplantación de identidad y robo de información confidencial a través de campaña de phishing dirigida (spear phishing) contra directivos financieros.
+
+**Descripción del riesgo:** La organización es vulnerable a una campaña de phishing dirigida (spear phishing) contra directivos financieros, lo que podría permitir a los atacantes obtener acceso no autorizado a información confidencial y realizar acciones maliciosas, como robo de fondos o divulgación de información sensible.
+
+**Categorías de riesgo:**
+
+* **Activo:** Información confidencial y financiera de la organización.
+* **Amenaza:** Ataques de phishing dirigida (spear phishing) contra directivos financieros.
+* **Vulnerabilidad:** Falta de conciencia y capacitación de los directivos financieros sobre los riesgos de phishing, así como posibles debilidades en la seguridad de la información y la autenticación.
+
+**Nivel de riesgo:** Alto
+
+* **Probabilidad:** Alta (es probable que los atacantes intenten realizar este tipo de ataques, ya que los directivos financieros tienen acceso a información confidencial y financiera).
+* **Impacto:** Alto (el robo de información confidencial y financiera podría tener un impacto significativo en la organización, incluyendo pérdidas financieras y daño a la reputación).
+
+**Medidas de control:** Para mitigar este riesgo, se podrían implementar las siguientes medidas de control:
+
+* Capacitación y conciencia sobre los riesgos de phishing para los directivos financieros.
+* Implementación de soluciones de seguridad de correo electrónico para detectar y bloquear correos electrónicos sospechosos.
+* Autenticación de dos factores para acceder a sistemas y aplicaciones críticas.
+* Monitoreo y análisis de logs para detectar actividad sospechosa.
+* Realización de simulacros de phishing para evaluar la conciencia y la preparación de los directivos financieros.
+
+================================================================================
+Caso C14 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación del Riesgo según Metodología MAGERIT
+
+## 1. Identificación del Activo Afectado
+
+| Categoría MAGERIT | Detalle |
+|---|---|
+| **Tipo de Activo** | [P] Personal |
+| **Subtipo** | Personal interno con acceso a sistemas críticos [I] |
+| **Activo relacionado** | Sistemas críticos [D] (Datos/Información), [S] (Servicios) |
+
+---
+
+## 2. Amenaza Asociada (Catálogo MAGERIT)
+
+| Código | Amenaza | Origen |
+|---|---|---|
+| **[E.19]** | Fugas de información | Errores no intencionados |
+| **[E.15]** | Alteración accidental de la información | Errores no intencionados |
+| **[E.28]** | Indisponibilidad del personal | Errores no intencionados |
+| **[A.28]** | Indisponibilidad del personal (deliberado) | Ataques intencionados |
+| **[A.30]** | Ingeniería social | Ataques intencionados |
+
+> ⚠️ La falta de concienciación convierte al personal en **vector de entrada** para amenazas como phishing, ingeniería social o manejo indebido de credenciales.
+
+---
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Impacto |
+|---|---|
+| **Confidencialidad [C]** | Alto — riesgo de divulgación no autorizada |
+| **Integridad [I]** | Medio-Alto — modificación accidental/maliciosa de datos |
+| **Disponibilidad [D]** | Medio — posible interrupción por mal uso |
+| **Autenticidad [A]** | Medio — riesgo de suplantación por credenciales mal gestionadas |
+| **Trazabilidad [T]** | Medio — dificultad para atribuir acciones |
+
+---
+
+## 4. Valoración del Riesgo
+
+### Probabilidad de Ocurrencia
+🔴 **ALTA** — La falta de formación incrementa significativamente la probabilidad de incidentes (clic en phishing, uso indebido, exposición de credenciales).
+
+### Impacto Potencial
+🔴 **CRÍTICO** — Al tratarse de acceso a **sistemas críticos**, cualquier incidente puede escalar a:
+- Compromiso de datos sensibles
+- Interrupción de servicios esenciales
+- Pérdida de integridad en procesos clave
+
+### Nivel de Riesgo Global
+```
+Riesgo = Probabilidad (Alta) × Impacto (Crítico) = RIESGO MUY ALTO 🔴🔴
+```
+
+---
+
+## 5. Vulnerabilidad Identificada
+
+**[V.PER.01]** – Ausencia de programa de concienciación en seguridad para personal con privilegios de acceso.
+
+Factores agravantes:
+- Sin formación específica en políticas de seguridad
+- Perfil "no técnico" → menor capacidad de detectar anomalías
+- Acceso directo a activos críticos → mayor superficie de exposición
+
+---
+
+## 6. Salvaguardas Recomendadas (Catálogo MAGERIT)
+
+| Código | Salvaguarda | Prioridad |
+|---|---|---|
+| **[PE]** | Programa de formación y concienciación continua | 🔴 Urgente |
+| **[PE.2]** | Política de menor privilegio (revisar necesidad real de acceso) | 🔴 Alta |
+| **[NEW.1]** | Segregación de funciones | 🟠 Media |
+| **[COMMS]** | Simulacros de phishing y ejercicios prácticos | 🟠 Media |
+| **[AUTH]** | Refuerzo de autenticación multifactor (MFA) | 🔴 Alta |
+| **[LOG]** | Monitorización y trazabilidad de accesos | 🟠 Media |
+
+---
+
+## 7. Conclusión
+
+Este riesgo representa una **vulnerabilidad crítica en la dimensión humana** del sistema de gestión de seguridad. Combina:
+
+✅ Alta probabilidad (factor humano no capacitado)
+✅ Alto impacto (acceso a activos críticos)
+✅ Múltiples amenazas potenciales (accidentales e intencionadas)
+
+**Recomendación:** Tratamiento **prioritario e inmediato**, mediante reducción del riesgo (formación + controles técnicos) antes de considerar aceptación o transferencia.
+
+================================================================================
+Caso C14 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo
+
+- Escenario: Personal interno no técnico, sin formación en concienciación de seguridad, con acceso a sistemas críticos, realiza acciones inadecuadas que afectan a los servicios y a la información.
+- Agente de amenaza: Interno (usuario legítimo).
+- Intencionalidad: No intencionada.
+- Familia de amenaza (MAGERIT): Errores y fallos no intencionados (error humano en operación/administración, manejo indebido de información, configuración incorrecta).
+- Activos afectados: Sistemas y servicios críticos, información crítica, procesos de negocio dependientes.
+- Dimensiones de impacto: 
+  - Integridad: Muy alto
+  - Disponibilidad: Alto–Muy alto
+  - Confidencialidad: Medio–Alto (posible divulgación accidental)
+  - Autenticidad/Trazabilidad: Medio–Alto (registros incompletos o acciones no correctamente atribuidas)
+- Vulnerabilidades relevantes (MAGERIT): Falta de formación y concienciación; exceso de privilegios; ausencia de segregación de funciones y de doble control; procedimientos operativos insuficientes; falta de monitorización y registro efectivo.
+- Probabilidad: Alta (debido a la combinación de acceso crítico y falta de formación).
+- Nivel de riesgo inherente: Alto–Muy alto (prioridad de tratamiento elevada).
+
+================================================================================
+Caso C14 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de los Sistemas de Información y Comunicaciones), clasificaría este riesgo de la siguiente manera:
+
+**Identificador del riesgo:** Riesgo de acceso no autorizado o inadecuado a sistemas críticos por parte de personal no técnico sin formación en concienciación de seguridad.
+
+**Categoría del riesgo:** Riesgo de Seguridad (S)
+
+**Subcategoría del riesgo:** Riesgo de Acceso no Autorizado (S.A)
+
+**Nivel de probabilidad:** Alto (P=8)
+
+* El personal no técnico sin formación en concienciación de seguridad puede no ser consciente de las medidas de seguridad básicas, lo que aumenta la probabilidad de que cometan errores o realicen acciones que comprometan la seguridad de los sistemas críticos.
+
+**Nivel de impacto:** Alto (I=9)
+
+* El acceso a sistemas críticos por parte de personal no autorizado o sin la debida formación puede tener consecuencias graves, como la pérdida de confidencialidad, integridad o disponibilidad de la información, lo que puede afectar negativamente a la organización.
+
+**Nivel de riesgo:** Alto (R=P x I = 8 x 9 = 72)
+
+**Valoración del riesgo:** Riesgo Alto
+
+**Recomendaciones de tratamiento:**
+
+1. Proporcionar formación en concienciación de seguridad a todo el personal que tenga acceso a sistemas críticos.
+2. Implementar controles de acceso y autenticación para garantizar que solo el personal autorizado tenga acceso a los sistemas críticos.
+3. Realizar auditorías y monitoreo regular para detectar y corregir cualquier acceso no autorizado o inadecuado a los sistemas críticos.
+
+Es importante tener en cuenta que la valoración del riesgo puede variar dependiendo de la organización y del contexto específico en el que se encuentra. Es fundamental realizar un análisis detallado y personalizado para determinar el nivel de riesgo y las medidas de tratamiento adecuadas.
+
+================================================================================
+Caso C15 - anthropic/claude-sonnet-5
+================================================================================
+# Clasificación de Riesgo según Metodología MAGERIT
+
+## 1. Identificación del Activo Afectado
+
+| Tipo de Activo | Descripción |
+|---|---|
+| **[D] Datos/Información** | Información corporativa, datos de clientes, propiedad intelectual accedida |
+| **[S] Servicios** | Servicios internos a los que tiene acceso privilegiado |
+| **[SW] Aplicaciones** | Sistemas/aplicaciones con permisos elevados |
+| **[K] Claves criptográficas** | Credenciales de acceso privilegiado |
+
+## 2. Clasificación de la Amenaza (Catálogo MAGERIT)
+
+### **[A] Ataques Intencionados**
+- **[A.11] Acceso no autorizado** — el empleado usa legítimamente credenciales para fines ilegítimos
+- **[A.15] Modificación de la información** (si aplica)
+- **[A.18] Destrucción de la información** (riesgo potencial post-despido)
+- **[A.19] Divulgación de información** — **AMENAZA PRINCIPAL** (exfiltración de datos)
+- **[A.6] Abuso de privilegios de acceso** — **AMENAZA CENTRAL DEL CASO**
+
+## 3. Dimensiones de Seguridad Afectadas
+
+| Dimensión | Afectación | Nivel |
+|---|---|---|
+| **[C] Confidencialidad** | 🔴 Alta | Exfiltración de datos sensibles/confidenciales |
+| **[I] Integridad** | 🟡 Media | Posible alteración antes de salida |
+| **[D] Disponibilidad** | 🟡 Media | Riesgo de eliminación de datos/accesos |
+| **[A] Autenticidad** | 🟢 Baja-Media | Uso de identidad legítima con intención maliciosa |
+| **[T] Trazabilidad** | 🔴 Alta | Necesidad de evidenciar acciones realizadas |
+
+## 4. Valoración del Riesgo
+
+### Probabilidad
+**ALTA** — Existen indicios objetivos (descarga masiva) + contexto de motivación (despido inminente)
+
+### Impacto Potencial
+**CRÍTICO/ALTO**, considerando:
+- Fuga de información estratégica, PI o datos personales (riesgo legal - GDPR/LOPDGDD)
+- Daño reputacional
+- Pérdida de ventaja competitiva
+- Posibles sanciones regulatorias
+
+### Nivel de Riesgo
+```
+🔴 RIESGO CRÍTICO/ALTO
+(Probabilidad Alta × Impacto Alto/Crítico)
+```
+
+## 5. Salvaguardas Recomendadas (Inmediatas)
+
+| Tipo | Salvaguarda |
+|---|---|
+| **Preventiva** | Revocación inmediata/reducción de privilegios ante notificación de despido |
+| **Detectiva** | DLP (Data Loss Prevention) para monitorear transferencias anómalas |
+| **Detectiva** | UEBA (User Entity Behavior Analytics) para detectar patrones anómalos |
+| **Correctiva** | Protocolo de respuesta a incidentes (forense inmediato) |
+| **Organizativa** | Procedimiento formal de *offboarding* con desactivación escalonada de accesos |
+| **Legal** | Preservación de evidencia para posibles acciones legales |
+
+## 6. Recomendación Prioritaria
+
+⚠️ **ACCIÓN INMEDIATA REQUERIDA**: 
+1. Suspensión temporal de accesos privilegiados
+2. Auditoría forense de la actividad detectada
+3. Activación del plan de respuesta a incidentes
+4. Notificación a Legal/RRHH/DPO según corresponda
+
+---
+
+¿Deseas que profundice en el cálculo cuantitativo del riesgo (matriz de probabilidad-impacto) o en el plan de tratamiento específico?
+
+================================================================================
+Caso C15 - openai/gpt-5
+================================================================================
+Clasificación MAGERIT del riesgo
+
+- Descripción del escenario: Amenaza interna deliberada. Empleado con acceso privilegiado, en proceso de despido, con indicios de descarga masiva de datos (posible exfiltración y/o sabotaje).
+
+- Categoría MAGERIT (catálogo de amenazas): Ataque deliberado interno.
+  - Abuso de privilegios.
+  - Acceso no autorizado/exceso de acceso a información.
+  - Divulgación/Exfiltración de información.
+  - Modificación/Borrado no autorizado (posible sabotaje).
+  - Evasión de trazabilidad (borrado/alteración de logs), potencial.
+
+- Fuente/agente de amenaza: Insider con privilegios (personal interno autorizado).
+
+- Activos afectados (ejemplos):
+  - Datos sensibles: datos personales (RGPD), IP, secretos de negocio, financieros.
+  - Repositorios: bases de datos, DMS, repositorios de código, almacenamiento en nube.
+  - Infraestructura de acceso: cuentas privilegiadas, VPN, PAM, claves/API tokens.
+  - Evidencias y registros: logs, SIEM, copias de seguridad.
+
+- Dimensiones de seguridad afectadas (estimación de impacto):
+  - Confidencialidad: Muy Alta/Catastrófica (exfiltración masiva).
+  - Integridad: Alta (posible manipulación/borrado).
+  - Disponibilidad: Media (podría degradarse si hay sabotaje, pero no es el vector principal).
+  - Autenticidad: Media (posible suplantación con credenciales válidas).
+  - Trazabilidad: Alta (riesgo de borrado/alteración de evidencias).
+
+- Vulnerabilidades explotadas (típicas):
+  - Gestión de identidades y accesos deficiente (exceso de privilegios, falta de segregación).
+  - Revocación tardía de cuentas en procesos de offboarding.
+  - Controles DLP/UEBA insuficientes; monitoreo de anomalías ineficaz.
+  - Falta de restricciones de salida (egress), uso de dispositivos extraíbles/sin cifrar.
+  - Gestión de registros débil (retención, integridad).
+
+- Probabilidad/Verosimilitud: Muy Alta. Justificación: indicios de descarga masiva en un contexto de motivación elevada (despido) y capacidad (privilegios).
+
+- Impacto (valoración global): Muy Alto/Catastrófico. Posibles impactos legales (RGPD/LOPDGDD), reputacionales y económicos significativos.
+
+- Nivel de riesgo (R = Impacto x Probabilidad): Crítico/Muy Alto. Inaceptable; requiere tratamiento inmediato.
+  - Ejemplo de escala: Probabilidad 5/5; Impacto 5/5; Riesgo 25/25.
+
+- Escenarios de riesgo principales:
+  - Exfiltración y divulgación/venta de datos sensibles.
+  - Manipulación/borrado de información o activos para causar daño.
+  - Borrado/alteración de logs para ocultar huella.
+
+- Tratamiento recomendado (enfoque MAGERIT):
+  - Decisión: Reducir/Evitar de forma inmediata.
+  - Salvaguardas prioritarias (acción inmediata):
+    - Suspensión/revocación urgente de todas las credenciales y accesos del empleado (incl. privilegios, VPN, SaaS, tokens, claves).
+    - Bloqueo de exfiltración: reglas DLP, restricción de egress, bloqueo de sincronizaciones cloud y dispositivos extraíbles.
+    - Monitorización intensiva y contención: revisar SIEM/UEBA, aislar endpoints, snapshot de sistemas críticos.
+    - Preservación de evidencias y cadena de custodia; notificación a DPO/Legal si aplica RGPD.
+    - Revisión de accesos privilegiados y rotación de credenciales compartidas.
+  - Salvaguardas a corto/medio plazo:
+    - Fortalecer IAM/PAM (menor privilegio, JIT/JEA, segregación de funciones).
+    - Políticas y técnicas DLP/UEBA consolidadas; alertas por descargas masivas.
+    - Endurecimiento de registros (inmutabilidad, retención) y revisiones periódicas.
+    - Procedimiento de offboarding seguro y inmediato.
+
+Resumen: Riesgo MAGERIT clasificado como Ataque deliberado interno por abuso de privilegios, con probabilidad muy alta e impacto catastrófico; nivel de riesgo crítico e inaceptable que exige medidas de contención y mitigación inmediatas.
+
+================================================================================
+Caso C15 - groq/llama-3.3-70b-versatile
+================================================================================
+Según la metodología MAGERIT (Metodología de Análisis y Gestión de Riesgos de la Información y Tecnologías), clasificaría este riesgo de la siguiente manera:
+
+**Identificador del riesgo:** Amenaza interna - Acceso no autorizado a información confidencial
+
+**Descripción del riesgo:** Un empleado con acceso privilegiado que se encuentra en período de despido ha mostrado indicios de descarga masiva de datos, lo que podría suponer una amenaza para la seguridad de la información de la organización.
+
+**Categoría de riesgo:** Riesgo de Seguridad de la Información
+
+**Tipo de amenaza:** Amenaza interna ( Insider threat)
+
+**Vector de ataque:** Acceso no autorizado a información confidencial
+
+**Activo afectado:** Información confidencial de la organización
+
+**Probabilidad:** Alta (el empleado tiene acceso privilegiado y se encuentra en período de despido, lo que aumenta la motivación para realizar acciones maliciosas)
+
+**Impacto:** Alto (la descarga masiva de datos podría suponer una pérdida significativa de información confidencial, lo que podría afectar la reputación y la competitividad de la organización)
+
+**Nivel de riesgo:** Alto (debido a la alta probabilidad y el alto impacto potencial)
+
+**Medidas de control recomendadas:**
+
+* Monitorear el acceso y las actividades del empleado en el sistema
+* Revocar el acceso privilegiado del empleado de inmediato
+* Realizar un análisis de tráfico de red para detectar posibles transferencias de datos no autorizadas
+* Implementar medidas de detección y prevención de fugas de datos
+* Considerar la realización de una auditoría de seguridad para identificar posibles vulnerabilidades en el sistema.
+

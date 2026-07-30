@@ -69,3 +69,39 @@ class Hallazgo(BaseModel):
     prioridad: str  # baja, media, alta, deal_breaker (para M&A)
     estado: str = "pendiente"  # pendiente, revisado, resuelto
     creado_en: datetime = Field(default_factory=datetime.now)
+
+class FacilidadExplotacion(str, Enum):
+    baja = "baja"
+    media = "media"
+    alta = "alta"
+
+
+class CategoriaAmenaza(str, Enum):
+    naturales = "naturales"
+    industriales = "industriales"
+    errores_humanos = "errores_humanos"
+    ataques_deliberados = "ataques_deliberados"
+
+
+class Dimension(str, Enum):
+    confidencialidad = "confidencialidad"
+    integridad = "integridad"
+    disponibilidad = "disponibilidad"
+
+
+class HallazgoLLM(BaseModel):
+    activo: str
+    tipo_activo: TipoActivo
+    amenaza: str
+    categoria_amenaza: CategoriaAmenaza
+    codigos_magerit: list[str] = []
+    vulnerabilidad: str
+    facilidad_explotacion: FacilidadExplotacion
+    dimension_principal: Dimension
+    valor_confidencialidad: int = Field(ge=0, le=10)
+    valor_integridad: int = Field(ge=0, le=10)
+    valor_disponibilidad: int = Field(ge=0, le=10)
+    probabilidad_base: float = Field(ge=0, le=1)
+    normativa_aplicable: list[str] = []
+    justificacion: str
+    
