@@ -316,3 +316,38 @@ Caso "Destrucción de información" (AME-005):
 - Salvaguardas activas: SAL-002 (cifrado, 0.7) + SAL-005 (backup, 0.9)
 - Reducción combinada: 1 - (1-0.7)(1-0.9) = 0.97
 - Residual: 2.5 × (1 - 0.97) = 0.075 ✓
+
+---
+
+## Interfaz Streamlit v1
+
+**Fecha:** 2026-08-03
+
+### Alcance decidido
+
+- Una sola página con tres secciones (Ficha, Análisis, Resultados)
+- Ficha cargable como ejemplo predefinido (carga desde Excel queda
+  como trabajo futuro / iteración siguiente)
+- Selección de salvaguardas mediante checkboxes
+- Visualización de resultados con tabla coloreada, gráfico y top 3
+
+### Fuera de alcance en esta iteración
+
+- Ajuste manual de las valoraciones propuestas por el LLM
+  (human-in-the-loop pendiente para v2)
+- Persistencia de análisis previos (historial)
+- Exportación a PDF/Excel
+- Login o multi-usuario
+
+### Justificación del alcance
+
+Iteración mínima viable que permite demostrar el pipeline end-to-end
+visualmente. Suficiente para revisión con tutor y para el capítulo
+de validación. Las funciones descartadas se documentan como líneas
+de mejora futura en la memoria.
+### Deprecación de pandas.Styler.applymap
+
+Detectada al probar la UI: pandas eliminó `Styler.applymap` en su
+versión reciente, sustituido por `Styler.map`. Corrección de una
+palabra. Refuerza la necesidad de fijar versiones en `requirements.txt`
+para reproducibilidad, cosa que se aborda en la fase de empaquetado.
