@@ -282,3 +282,37 @@ producción.
 Al analizar la matriz se detectan huecos de cobertura (amenazas sin
 salvaguarda aplicable). Este análisis es útil para el propio proceso
 de gobierno de riesgos y se genera automáticamente.
+---
+
+## Primer AARR end-to-end funcional
+
+**Fecha:** 2026-08-03
+**Aplicación:** AppEjemplo (ficha genérica)
+**Modelo:** claude-sonnet-5
+
+### Resultados agregados
+
+- 10/10 amenazas valoradas sin errores
+- 3 salvaguardas implantadas aplicadas
+- Riesgos residuales: 1 alto, 3 medios, 6 bajos
+
+### Hallazgos cualitativos
+
+- El LLM identificó automáticamente un hueco de cobertura:
+  "Errores del administrador" quedó como riesgo alto residual porque
+  ninguna salvaguarda implantada lo mitigaba. La herramienta detecta
+  problemas de gobierno de riesgos sin instrucción explícita.
+- El modelo asignó N/A a "Desastre natural" correctamente al
+  interpretar que una app PaaS transfiere esa responsabilidad al
+  proveedor cloud.
+- Las justificaciones citan datos concretos de la ficha (%
+  obsolescencia, DAST/SAST, dependencias, tipos de usuario), no
+  razonamiento genérico. Evidencia de grounding en la entrada.
+
+### Validación de la acumulación probabilística
+
+Caso "Destrucción de información" (AME-005):
+- Inherente: 2.5
+- Salvaguardas activas: SAL-002 (cifrado, 0.7) + SAL-005 (backup, 0.9)
+- Reducción combinada: 1 - (1-0.7)(1-0.9) = 0.97
+- Residual: 2.5 × (1 - 0.97) = 0.075 ✓
