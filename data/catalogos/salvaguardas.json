@@ -1,0 +1,37 @@
+[
+  {
+    "id": "SAL-001",
+    "nombre": "Programas de auditorias",
+    "descripcion": "Auditorias periodicas de codigo, configuracion y accesos"
+  },
+  {
+    "id": "SAL-002",
+    "nombre": "Cifrado de datos en reposo",
+    "descripcion": "Datos almacenados protegidos con cifrado robusto"
+  },
+  {
+    "id": "SAL-003",
+    "nombre": "Plan de contingencia global",
+    "descripcion": "Plan de respuesta ante incidentes y recuperacion"
+  },
+  {
+    "id": "SAL-004",
+    "nombre": "MFA en autenticacion",
+    "descripcion": "Autenticacion multifactor para accesos privilegiados"
+  },
+  {
+    "id": "SAL-005",
+    "nombre": "Backup y restauracion",
+    "descripcion": "Copias de seguridad periodicas y probadas"
+  },
+  {
+    "id": "SAL-006",
+    "nombre": "WAF y filtrado perimetral",
+    "descripcion": "Filtrado de trafico web y proteccion frente a ataques externos"
+  },
+  {
+    "id": "SAL-007",
+    "nombre": "Formacion en concienciacion",
+    "descripcion": "Formacion periodica del personal en seguridad"
+  }
+]

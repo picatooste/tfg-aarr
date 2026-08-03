@@ -1,0 +1,33 @@
+[
+  {"salvaguarda_id": "SAL-001", "amenaza_id": "AME-001", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-001", "amenaza_id": "AME-002", "grado_mitigacion": 0.4},
+  {"salvaguarda_id": "SAL-001", "amenaza_id": "AME-003", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-001", "amenaza_id": "AME-006", "grado_mitigacion": 0.6},
+
+  {"salvaguarda_id": "SAL-002", "amenaza_id": "AME-004", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-002", "amenaza_id": "AME-005", "grado_mitigacion": 0.7},
+  {"salvaguarda_id": "SAL-002", "amenaza_id": "AME-007", "grado_mitigacion": 0.8},
+
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-001", "grado_mitigacion": 0.4},
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-002", "grado_mitigacion": 0.6},
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-003", "grado_mitigacion": 0.4},
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-006", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-009", "grado_mitigacion": 0.7},
+  {"salvaguarda_id": "SAL-003", "amenaza_id": "AME-010", "grado_mitigacion": 0.5},
+
+  {"salvaguarda_id": "SAL-004", "amenaza_id": "AME-001", "grado_mitigacion": 0.6},
+  {"salvaguarda_id": "SAL-004", "amenaza_id": "AME-003", "grado_mitigacion": 0.7},
+  {"salvaguarda_id": "SAL-004", "amenaza_id": "AME-007", "grado_mitigacion": 0.4},
+
+  {"salvaguarda_id": "SAL-005", "amenaza_id": "AME-005", "grado_mitigacion": 0.9},
+  {"salvaguarda_id": "SAL-005", "amenaza_id": "AME-009", "grado_mitigacion": 0.6},
+  {"salvaguarda_id": "SAL-005", "amenaza_id": "AME-010", "grado_mitigacion": 0.7},
+
+  {"salvaguarda_id": "SAL-006", "amenaza_id": "AME-002", "grado_mitigacion": 0.7},
+  {"salvaguarda_id": "SAL-006", "amenaza_id": "AME-004", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-006", "amenaza_id": "AME-007", "grado_mitigacion": 0.5},
+
+  {"salvaguarda_id": "SAL-007", "amenaza_id": "AME-006", "grado_mitigacion": 0.5},
+  {"salvaguarda_id": "SAL-007", "amenaza_id": "AME-007", "grado_mitigacion": 0.6},
+  {"salvaguarda_id": "SAL-007", "amenaza_id": "AME-008", "grado_mitigacion": 0.7}
+]

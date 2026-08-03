@@ -246,3 +246,39 @@ correctamente: 50% + 50% -> 75% combinado.
 Pesos ordinales y umbrales de nivel estan externalizados como constantes
 (PESOS_ORDINALES, UMBRALES_NIVEL) para permitir alinear el sistema con
 distintas configuraciones empresariales sin modificar la logica.
+
+---
+
+## Externalización de catálogos en JSON
+
+**Fecha:** 2026-07-30
+
+### Decisión
+
+Los catálogos (amenazas, salvaguardas, matriz de mitigación) se
+almacenan en ficheros JSON en `data/catalogos/`, no en constantes
+Python.
+
+### Justificación
+
+- **Auditoría**: cada cambio queda en el historial de Git como un diff
+  legible, no como un cambio de código.
+- **Editabilidad**: personal no técnico (analista de seguridad) puede
+  actualizar el catálogo sin tocar código Python.
+- **Reutilización**: los mismos JSON se podrían consumir desde otras
+  herramientas (Excel, dashboards) si fuera necesario.
+- **Separación entre lógica y datos**: el motor y el pipeline no
+  cambian si se añaden nuevas amenazas o salvaguardas.
+
+### Fail-fast
+
+La carga y validación (contra los modelos Pydantic) se realiza en
+tiempo de import del módulo `src.catalogos`. Un JSON mal formado o con
+tipos incorrectos hace fallar el arranque, no una petición en
+producción.
+
+### Descubrimiento colateral
+
+Al analizar la matriz se detectan huecos de cobertura (amenazas sin
+salvaguarda aplicable). Este análisis es útil para el propio proceso
+de gobierno de riesgos y se genera automáticamente.

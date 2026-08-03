@@ -1,0 +1,62 @@
+[
+  {
+    "id": "AME-001",
+    "nombre": "Manipulacion de programas",
+    "tipo": "Ataques intencionados",
+    "descripcion": "Alteracion no autorizada del software o de su configuracion"
+  },
+  {
+    "id": "AME-002",
+    "nombre": "Denegacion de servicios",
+    "tipo": "Ataques intencionados",
+    "descripcion": "Ataque que impide el uso legitimo del servicio"
+  },
+  {
+    "id": "AME-003",
+    "nombre": "Manipulacion de los equipos",
+    "tipo": "Ataques intencionados",
+    "descripcion": "Acceso fisico o logico no autorizado a los sistemas"
+  },
+  {
+    "id": "AME-004",
+    "nombre": "Difusion de software daninho",
+    "tipo": "Ataques intencionados",
+    "descripcion": "Introduccion de malware en los sistemas"
+  },
+  {
+    "id": "AME-005",
+    "nombre": "Destruccion de informacion",
+    "tipo": "Ataques intencionados",
+    "descripcion": "Perdida deliberada de datos criticos"
+  },
+  {
+    "id": "AME-006",
+    "nombre": "Errores de configuracion",
+    "tipo": "Errores y fallos no intencionados",
+    "descripcion": "Configuraciones incorrectas que exponen vulnerabilidades"
+  },
+  {
+    "id": "AME-007",
+    "nombre": "Fugas de informacion",
+    "tipo": "Errores y fallos no intencionados",
+    "descripcion": "Exposicion accidental de datos sensibles"
+  },
+  {
+    "id": "AME-008",
+    "nombre": "Errores del administrador",
+    "tipo": "Errores y fallos no intencionados",
+    "descripcion": "Fallos operativos del personal tecnico"
+  },
+  {
+    "id": "AME-009",
+    "nombre": "Desastre natural",
+    "tipo": "Desastres naturales",
+    "descripcion": "Eventos como inundaciones, incendios o terremotos"
+  },
+  {
+    "id": "AME-010",
+    "nombre": "Fallo del hardware",
+    "tipo": "Fallos tecnicos",
+    "descripcion": "Averia de componentes fisicos"
+  }
+]
