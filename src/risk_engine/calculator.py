@@ -1,98 +1,140 @@
 """
-Motor de calculo de riesgo segun MAGERIT (metodo cualitativo escalado).
+Motor determinista de calculo de riesgo.
 
-La logica es deterministica: dados una probabilidad y un impacto, el
-valor y el nivel de riesgo son reproducibles. Esto separa la parte
-interpretativa (que puede hacer un LLM) de la parte cuantitativa (que
-debe ser trazable y auditable).
+Implementa la formula usada por la macro de Excel corporativa:
+
+    riesgo_inherente = ocurrencia * promedio(imp_economico, imp_operacional)
+    riesgo_residual  = riesgo_inherente * (1 - reduccion_total)
+
+Donde reduccion_total se calcula por acumulacion probabilistica de todas
+las salvaguardas implantadas que mitigan la amenaza.
+
+Los pesos de las etiquetas ordinales son configurables (PESOS_ORDINALES)
+para poder alinear el sistema con distintas parametrizaciones de la
+macro sin tocar la logica.
 """
 
 from src.models import (
-    Activo,
-    Amenaza,
-    Vulnerabilidad,
-    Riesgo,
+    Ocurrencia,
+    NivelImpacto,
     NivelRiesgo,
+    ValoracionAmenaza,
+    SalvaguardaImplantada,
+    MitigacionAmenaza,
+    RiesgoInherente,
+    RiesgoResidual,
 )
 
 
-# Umbrales de nivel de riesgo (MAGERIT cualitativo escalado)
-UMBRALES_NIVEL = [
-    (2.0, NivelRiesgo.bajo),
-    (4.0, NivelRiesgo.medio),
-    (7.0, NivelRiesgo.alto),
-    (10.01, NivelRiesgo.critico),
-]
+# =============================================================================
+# PARAMETROS DE CALCULO (configurables)
+# =============================================================================
 
-# Ajuste de probabilidad segun facilidad de explotacion de la vulnerabilidad
-FACTOR_EXPLOTACION = {
-    "baja": 0.3,
-    "media": 0.6,
-    "alta": 1.0,
+# Pesos lineales para etiquetas ordinales.
+# Si la macro real usa otros pesos, solo hay que cambiar aqui.
+PESOS_ORDINALES = {
+    Ocurrencia.no_aplica: 0,
+    Ocurrencia.anual: 1,
+    Ocurrencia.mensual: 2,
+    Ocurrencia.semanal: 3,
+    NivelImpacto.no_aplica: 0,
+    NivelImpacto.limitado: 1,
+    NivelImpacto.medio: 2,
+    NivelImpacto.relevante: 3,
 }
 
-
-def calcular_impacto(activo: Activo) -> float:
-    """
-    El impacto se deriva del valor del activo en las dimensiones CIAT.
-    Usamos el maximo porque en MAGERIT, el peor efecto sobre cualquier
-    dimension determina el impacto global (criterio conservador).
-    """
-    return float(max(
-        activo.valor_confidencialidad,
-        activo.valor_integridad,
-        activo.valor_disponibilidad,
-    ))
+# Umbrales de nivel de riesgo sobre la escala 0-9.
+# Cambiar si la empresa usa otra clasificacion.
+UMBRALES_NIVEL = [
+    (1.5, NivelRiesgo.bajo),
+    (3.5, NivelRiesgo.medio),
+    (6.5, NivelRiesgo.alto),
+    (9.01, NivelRiesgo.critico),
+]
 
 
-def calcular_probabilidad(
-    amenaza: Amenaza,
-    vulnerabilidad: Vulnerabilidad,
-) -> float:
-    """
-    La probabilidad efectiva combina la probabilidad base de la amenaza
-    con la facilidad de explotacion de la vulnerabilidad asociada. Un
-    activo con vulnerabilidad de facil explotacion aumenta la
-    probabilidad; uno con vulnerabilidad dificil de explotar la reduce.
-    """
-    factor = FACTOR_EXPLOTACION.get(
-        vulnerabilidad.facilidad_explotacion.lower(),
-        0.6,  # valor por defecto si viene un texto no esperado
-    )
-    prob = amenaza.probabilidad_base * factor
-    return max(0.0, min(1.0, prob))  # aseguramos rango [0, 1]
+# =============================================================================
+# FUNCIONES AUXILIARES
+# =============================================================================
 
-
-def determinar_nivel(valor_riesgo: float) -> NivelRiesgo:
-    """Mapea el valor numerico al nivel cualitativo."""
+def _determinar_nivel(valor: float) -> NivelRiesgo:
+    """Mapea un valor numerico al nivel cualitativo segun los umbrales."""
     for umbral, nivel in UMBRALES_NIVEL:
-        if valor_riesgo < umbral:
+        if valor < umbral:
             return nivel
     return NivelRiesgo.critico
 
 
-def calcular_riesgo(
-    id_riesgo: str,
-    activo: Activo,
-    amenaza: Amenaza,
-    vulnerabilidad: Vulnerabilidad,
-) -> Riesgo:
-    """
-    Construye un objeto Riesgo completo aplicando el metodo MAGERIT
-    cualitativo escalado. Toda la logica es deterministica y trazable.
-    """
-    probabilidad = calcular_probabilidad(amenaza, vulnerabilidad)
-    impacto = calcular_impacto(activo)
-    valor_riesgo = probabilidad * impacto
-    nivel = determinar_nivel(valor_riesgo)
+# =============================================================================
+# CALCULO DE RIESGO INHERENTE
+# =============================================================================
 
-    return Riesgo(
-        id=id_riesgo,
-        activo_id=activo.id,
-        amenaza_id=amenaza.id,
-        vulnerabilidad_id=vulnerabilidad.id,
-        probabilidad=round(probabilidad, 3),
-        impacto=impacto,
-        valor_riesgo=round(valor_riesgo, 3),
+def calcular_riesgo_inherente(valoracion: ValoracionAmenaza) -> RiesgoInherente:
+    """
+    Calcula el riesgo inherente (sin salvaguardas) para una amenaza
+    valorada sobre una aplicacion.
+    """
+    peso_ocu = PESOS_ORDINALES[valoracion.ocurrencia]
+    peso_imp_econ = PESOS_ORDINALES[valoracion.impacto_economico]
+    peso_imp_oper = PESOS_ORDINALES[valoracion.impacto_operacional]
+    peso_imp_prom = (peso_imp_econ + peso_imp_oper) / 2
+
+    valor = peso_ocu * peso_imp_prom
+    nivel = _determinar_nivel(valor)
+
+    return RiesgoInherente(
+        amenaza_id=valoracion.amenaza_id,
+        peso_ocurrencia=peso_ocu,
+        peso_impacto_promedio=peso_imp_prom,
+        valor=round(valor, 3),
         nivel=nivel,
+    )
+
+
+# =============================================================================
+# CALCULO DE RIESGO RESIDUAL
+# =============================================================================
+
+def calcular_riesgo_residual(
+    inherente: RiesgoInherente,
+    salvaguardas_implantadas: list[SalvaguardaImplantada],
+    matriz_mitigacion: list[MitigacionAmenaza],
+) -> RiesgoResidual:
+    """
+    Aplica el efecto conjunto de las salvaguardas implantadas que
+    mitigan la amenaza. Usa acumulacion probabilistica para evitar
+    valores absurdos:
+
+        reduccion_total = 1 - Producto(1 - grado_mitigacion_i)
+
+    Ejemplo: dos salvaguardas de 50% cada una dan 75% combinado, no 100%.
+    """
+    ids_implantadas = {
+        s.salvaguarda_id for s in salvaguardas_implantadas if s.implantada
+    }
+
+    # Filtramos las mitigaciones relevantes: que apunten a esta amenaza
+    # y provengan de salvaguardas que si estan implantadas.
+    mitigaciones_activas = [
+        m for m in matriz_mitigacion
+        if m.amenaza_id == inherente.amenaza_id
+        and m.salvaguarda_id in ids_implantadas
+    ]
+
+    # Acumulacion probabilistica de la reduccion
+    factor_no_mitigado = 1.0
+    for m in mitigaciones_activas:
+        factor_no_mitigado *= (1 - m.grado_mitigacion)
+    reduccion_total = 1 - factor_no_mitigado
+
+    valor_residual = inherente.valor * (1 - reduccion_total)
+    nivel_residual = _determinar_nivel(valor_residual)
+
+    return RiesgoResidual(
+        amenaza_id=inherente.amenaza_id,
+        valor_inherente=inherente.valor,
+        reduccion_total=round(reduccion_total, 3),
+        valor_residual=round(valor_residual, 3),
+        nivel=nivel_residual,
+        salvaguardas_aplicadas=[m.salvaguarda_id for m in mitigaciones_activas],
     )

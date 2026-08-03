@@ -221,3 +221,28 @@ sistemáticamente más conservador (~30% menor). En un motor de riesgo
 determinístico, esto se propaga al valor final del riesgo. Requiere
 discusión en la memoria: ¿usar consenso de N modelos? ¿ajustar por
 prior de conservadurismo?
+
+---
+
+## Formula del motor de riesgo
+
+**Fecha:** 2026-07-30
+
+### Formulas
+
+- Riesgo inherente = peso(Ocurrencia) x promedio(peso(Imp. Economico), peso(Imp. Operacional))
+- Reduccion combinada = 1 - Π(1 - grado_mitigacion_i)   [acumulacion probabilistica]
+- Riesgo residual = riesgo_inherente x (1 - reduccion_total)
+
+### Justificacion de la acumulacion probabilistica
+
+Sumar los grados de mitigacion produce valores absurdos (dos salvaguardas
+al 50% + 50% = 100% no elimina el riesgo). La acumulacion probabilistica
+modela la probabilidad de que "al menos una salvaguarda actue"
+correctamente: 50% + 50% -> 75% combinado.
+
+### Parametrizacion
+
+Pesos ordinales y umbrales de nivel estan externalizados como constantes
+(PESOS_ORDINALES, UMBRALES_NIVEL) para permitir alinear el sistema con
+distintas configuraciones empresariales sin modificar la logica.
