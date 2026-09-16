@@ -142,3 +142,35 @@ def _valorar_amenaza(
         justificacion=llm_val.justificacion,
         fuente="llm",
     )
+def recalcular_desde_valoraciones(
+    aplicacion: str,
+    modelo_ia: str,
+    valoraciones: list[ValoracionAmenaza],
+    salvaguardas_implantadas: list[SalvaguardaImplantada],
+) -> InformeAARR:
+    """
+    Reconstruye el InformeAARR aplicando el motor a valoraciones dadas.
+    No llama al LLM: usa las valoraciones tal como vienen (pueden estar
+    ajustadas por el humano). Util para el flujo human-in-the-loop.
+    """
+    riesgos_inh: list[RiesgoInherente] = []
+    riesgos_res: list[RiesgoResidual] = []
+
+    for val in valoraciones:
+        inherente = calcular_riesgo_inherente(val)
+        residual = calcular_riesgo_residual(
+            inherente=inherente,
+            salvaguardas_implantadas=salvaguardas_implantadas,
+            matriz_mitigacion=MATRIZ_MITIGACION,
+        )
+        riesgos_inh.append(inherente)
+        riesgos_res.append(residual)
+
+    return InformeAARR(
+        aplicacion=aplicacion,
+        modelo_ia=modelo_ia,
+        valoraciones=valoraciones,
+        riesgos_inherentes=riesgos_inh,
+        salvaguardas_implantadas=salvaguardas_implantadas,
+        riesgos_residuales=riesgos_res,
+    )

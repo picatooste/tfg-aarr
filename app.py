@@ -21,6 +21,7 @@ from src.models import (
     FichaAplicacion, ServicioIT, GrupoUsuarios, DependenciaApp,
     EstadoTecnico, ModeloServicio, TipoHost, TipoUsuario,
     NivelPermisos, GradoDependencia, SalvaguardaImplantada,
+    ValoracionAmenaza, Ocurrencia, NivelImpacto,
 )
 from src.catalogos import AMENAZAS, SALVAGUARDAS, amenaza as get_amenaza
 from src.pipeline import analizar_aplicacion
@@ -104,49 +105,43 @@ def crear_ficha_ejemplo() -> FichaAplicacion:
 
 st.header("1. Ficha de la aplicacion")
 
-col1, col2 = st.columns([1, 3])
+col1, col2, col3 = st.columns([1, 1, 2])
 with col1:
-    if st.button("Cargar ficha de ejemplo", type="primary"):
+    if st.button("Cargar ficha de ejemplo"):
         st.session_state.ficha = crear_ficha_ejemplo()
-        st.session_state.informe = None  # invalidamos analisis previo
+        st.session_state.informe = None
         st.rerun()
 
 with col2:
+    excel_subido = st.file_uploader(
+        "O sube un Excel", type=["xlsx"], label_visibility="collapsed",
+    )
+    if excel_subido is not None:
+        # Solo procesamos si es un archivo nuevo (no en cada rerun)
+        if st.session_state.get("excel_procesado") != excel_subido.name:
+            from src.ingest_excel import cargar_ficha_excel
+            from pathlib import Path
+            import tempfile
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+                tmp.write(excel_subido.getvalue())
+                ruta_tmp = Path(tmp.name)
+            try:
+                st.session_state.ficha = cargar_ficha_excel(ruta_tmp)
+                st.session_state.informe = None
+                st.session_state.excel_procesado = excel_subido.name
+                st.success(f"Excel cargado: {st.session_state.ficha.nombre}")
+            except Exception as e:
+                st.error(f"Error cargando el Excel: {e}")
+
+with col3:
     if st.session_state.ficha is None:
         st.info(
-            "Carga una ficha de ejemplo o (en versiones futuras) sube "
-            "un Excel con la ficha rellena."
+            "Carga la ficha de ejemplo o sube un Excel con la ficha rellena. "
+            "Puedes generar una plantilla vacia ejecutando "
+            "`python generar_plantilla.py`."
         )
     else:
-        f = st.session_state.ficha
-        st.success(f"Ficha cargada: **{f.nombre}**")
-
-if st.session_state.ficha is not None:
-    with st.expander("Ver ficha completa", expanded=False):
-        f = st.session_state.ficha
-        st.markdown(f"**{f.nombre}** — _{f.descripcion}_")
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Modelo", f.modelo_servicio.value)
-        c2.metric("Host", f.host.value)
-        c3.metric("Area", f.area_responsable)
-
-        st.markdown("**Usuarios:**")
-        st.write({
-            "internos": f.tiene_usuarios_internos,
-            "proveedores": f.tiene_usuarios_proveedores,
-            "clientes": f.tiene_usuarios_clientes,
-        })
-
-        st.markdown("**Estado tecnico:**")
-        et = f.estado_tecnico
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("Obsolescencia", f"{et.porcentaje_obsolescencia}%")
-        c2.metric("DAST id/corr",
-                  f"{et.amenazas_dast_identificadas}/{et.amenazas_dast_corregidas}")
-        c3.metric("SAST id/corr",
-                  f"{et.amenazas_sast_identificadas}/{et.amenazas_sast_corregidas}")
-        c4.metric("Uso memoria", f"{et.uso_memoria_porcentaje}%")
-
+        st.success(f"Ficha cargada: **{st.session_state.ficha.nombre}**")
 
 # =============================================================================
 # SECCION 2: ANALISIS
@@ -213,7 +208,7 @@ else:
 
 
 # =============================================================================
-# SECCION 3: RESULTADOS
+# SECCION 3: RESULTADOS + AJUSTE HUMANO
 # =============================================================================
 
 st.header("3. Resultados")
@@ -223,13 +218,106 @@ informe = st.session_state.informe
 if informe is None:
     st.info("Ejecuta un analisis para ver los resultados.")
 else:
-    # Cabecera con metadatos
-    c1, c2, c3 = st.columns(3)
+    # --- Cabecera con metadatos ---
+    c1, c2, c3, c4 = st.columns(4)
     c1.metric("Aplicacion", informe.aplicacion)
     c2.metric("Modelo IA", informe.modelo_ia)
     c3.metric("Amenazas evaluadas", len(informe.riesgos_residuales))
+    ajustadas = sum(
+        1 for v in informe.valoraciones
+        if v.fuente == "llm_ajustado_humano"
+    )
+    c4.metric("Ajustes del analista", f"{ajustadas} / {len(informe.valoraciones)}")
 
-    # --- Tabla de resultados ---
+    # --- EDITOR DE VALORACIONES (human-in-the-loop) ---
+    st.subheader("Valoraciones (puedes ajustar y recalcular)")
+    st.caption(
+        "Edita ocurrencia y/o impactos si no estas de acuerdo con la "
+        "propuesta del LLM. Los valores permitidos siguen el vocabulario "
+        "controlado (N/A, Anual, Mensual, Semanal para ocurrencia; N/A, "
+        "Limitado, Medio, Relevante para impactos)."
+    )
+
+    val_por_id = {v.amenaza_id: v for v in informe.valoraciones}
+
+    # Preparamos DataFrame editable
+    filas_edicion = []
+    for res in informe.riesgos_residuales:
+        val = val_por_id[res.amenaza_id]
+        filas_edicion.append({
+            "id": res.amenaza_id,
+            "amenaza": get_amenaza(res.amenaza_id).nombre,
+            "ocurrencia": val.ocurrencia.value,
+            "impacto_economico": val.impacto_economico.value,
+            "impacto_operacional": val.impacto_operacional.value,
+            "residual": res.valor_residual,
+            "nivel": res.nivel.value,
+            "fuente": val.fuente,
+        })
+    df_edit = pd.DataFrame(filas_edicion)
+
+    # Opciones permitidas para cada columna editable
+    opciones_ocurrencia = ["N/A", "Anual", "Mensual", "Semanal"]
+    opciones_impacto = ["N/A", "Limitado", "Medio", "Relevante"]
+
+    edited = st.data_editor(
+        df_edit,
+        column_config={
+            "id": st.column_config.TextColumn("ID", disabled=True),
+            "amenaza": st.column_config.TextColumn("Amenaza", disabled=True),
+            "ocurrencia": st.column_config.SelectboxColumn(
+                "Ocurrencia", options=opciones_ocurrencia, required=True,
+            ),
+            "impacto_economico": st.column_config.SelectboxColumn(
+                "Impacto Econ.", options=opciones_impacto, required=True,
+            ),
+            "impacto_operacional": st.column_config.SelectboxColumn(
+                "Impacto Op.", options=opciones_impacto, required=True,
+            ),
+            "residual": st.column_config.NumberColumn("Residual", disabled=True, format="%.3f"),
+            "nivel": st.column_config.TextColumn("Nivel", disabled=True),
+            "fuente": st.column_config.TextColumn("Fuente", disabled=True),
+        },
+        hide_index=True,
+        use_container_width=True,
+        key="editor_valoraciones",
+    )
+
+    if st.button("Recalcular con mis ajustes", type="primary"):
+        # Reconstruimos valoraciones detectando cambios respecto al original
+        nuevas_valoraciones = []
+        for _, row in edited.iterrows():
+            original = val_por_id[row["id"]]
+            cambiado = (
+                row["ocurrencia"] != original.ocurrencia.value
+                or row["impacto_economico"] != original.impacto_economico.value
+                or row["impacto_operacional"] != original.impacto_operacional.value
+            )
+            fuente = "llm_ajustado_humano" if cambiado else original.fuente
+            nuevas_valoraciones.append(
+                ValoracionAmenaza(
+                    amenaza_id=row["id"],
+                    ocurrencia=Ocurrencia(row["ocurrencia"]),
+                    impacto_economico=NivelImpacto(row["impacto_economico"]),
+                    impacto_operacional=NivelImpacto(row["impacto_operacional"]),
+                    justificacion=original.justificacion,
+                    fuente=fuente,
+                )
+            )
+
+        # Recalculamos con el motor (sin llamar al LLM)
+        from src.pipeline import recalcular_desde_valoraciones
+        st.session_state.informe = recalcular_desde_valoraciones(
+            aplicacion=informe.aplicacion,
+            modelo_ia=informe.modelo_ia,
+            valoraciones=nuevas_valoraciones,
+            salvaguardas_implantadas=informe.salvaguardas_implantadas,
+        )
+        st.rerun()
+
+    st.divider()
+
+    # --- Ranking final (usa el informe actualizado en session_state) ---
     st.subheader("Ranking por riesgo residual")
 
     filas = []
@@ -245,40 +333,55 @@ else:
 
     df = pd.DataFrame(filas).sort_values("residual", ascending=False)
 
-    # Colorear por nivel
     def color_nivel(v):
         colores = {
-            "critico": "background-color: #ffcccc",
-            "alto": "background-color: #ffe0b3",
-            "medio": "background-color: #fff2cc",
-            "bajo": "background-color: #d9ead3",
+            "critico": "background-color: #ffcccc; color: black",
+            "alto": "background-color: #ffe0b3; color: black",
+            "medio": "background-color: #fff2cc; color: black",
+            "bajo": "background-color: #d9ead3; color: black",
         }
         return colores.get(v, "")
 
     styled = df.style.map(color_nivel, subset=["nivel"])
     st.dataframe(styled, use_container_width=True, hide_index=True)
 
-    # --- Grafico simple ---
-    st.subheader("Grafico: riesgo inherente vs residual")
+    # --- Grafico ---
+    st.subheader("Riesgo inherente vs residual")
     df_plot = df.set_index("amenaza")[["inherente", "residual"]]
     st.bar_chart(df_plot, height=350)
 
     # --- Top 3 con justificacion ---
     st.subheader("Top 3 riesgos residuales: justificacion del LLM")
     top3 = df.head(3)
-    val_por_id = {v.amenaza_id: v for v in informe.valoraciones}
+    val_por_id_actual = {v.amenaza_id: v for v in informe.valoraciones}
 
     for _, row in top3.iterrows():
         aid = row["id"]
-        val = val_por_id[aid]
+        val = val_por_id_actual[aid]
+        etiqueta_fuente = "Ajustado por analista" if val.fuente == "llm_ajustado_humano" else "Propuesto por LLM"
         with st.expander(
             f"**{row['amenaza']}** — residual={row['residual']} "
-            f"({row['nivel']})",
+            f"({row['nivel']}) — {etiqueta_fuente}",
             expanded=True,
         ):
             c1, c2, c3 = st.columns(3)
             c1.metric("Ocurrencia", val.ocurrencia.value)
             c2.metric("Impacto econ.", val.impacto_economico.value)
             c3.metric("Impacto op.", val.impacto_operacional.value)
-            st.markdown("**Justificacion:**")
+            st.markdown("**Justificacion del LLM:**")
             st.write(val.justificacion)
+
+        # --- Boton de descarga del informe PDF ---
+    from src.reporting.pdf_report import generar_informe_pdf
+    pdf_bytes = generar_informe_pdf(st.session_state.ficha, informe)
+    nombre_pdf = (
+        f"AARR_{informe.aplicacion}_"
+        f"{informe.fecha_analisis.strftime('%Y%m%d_%H%M')}.pdf"
+    )
+    st.download_button(
+        label="Descargar informe (PDF)",
+        data=pdf_bytes,
+        file_name=nombre_pdf,
+        mime="application/pdf",
+        type="primary",
+    )

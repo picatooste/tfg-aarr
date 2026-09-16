@@ -351,3 +351,60 @@ Detectada al probar la UI: pandas eliminó `Styler.applymap` en su
 versión reciente, sustituido por `Styler.map`. Corrección de una
 palabra. Refuerza la necesidad de fijar versiones en `requirements.txt`
 para reproducibilidad, cosa que se aborda en la fase de empaquetado.
+### Métricas reales de una ejecución completa vía UI
+
+- Aplicación: AppEjemplo (10 amenazas, 3 salvaguardas)
+- Tiempo total: 74,8 s
+- Latencia media por amenaza: ~7,5 s
+- Coste estimado: <$0,10
+- Resultado: 1 alto, 4 medios, 5 bajos
+- Riesgo destacado: AME-008 (Errores del administrador) queda como
+  único "alto" residual por ausencia de salvaguarda implantada. La
+  herramienta detecta autónomamente huecos de gobernanza.
+
+  ---
+
+## Ingesta desde Excel: formato propio
+
+**Fecha:** 2026-08-03
+
+### Decisión
+
+Se define un formato Excel propio con 5 hojas (Ficha, Servicios_IT,
+Grupos_Usuarios, Dependencias, Estado_Tecnico) en lugar de intentar
+consumir directamente el formato del Excel corporativo.
+
+### Justificación
+
+- El Excel corporativo tiene macros, formato visual, bloques y celdas
+  combinadas que dificultan la extracción programática robusta.
+- Un formato propio, simple y estable, mapea 1:1 al modelo de datos
+  (Pydantic) y falla temprano si un valor no cumple.
+- En producción se implementaría un adaptador que convierta el Excel
+  corporativo a este formato estándar, aislando la lógica de negocio
+  de la fuente de datos.
+
+### Beneficios colaterales
+
+- Se genera automáticamente una plantilla vacía para el usuario final.
+- La misma estructura sirve para intercambio entre sistemas si en el
+  futuro se conecta un CMDB u otra fuente.
+
+  ### Determinismo limitado con temperature=0
+
+Detectada varianza en la valoración del LLM (Claude Sonnet 5) entre
+ejecuciones sobre la misma ficha aun con temperature=0. Esto se debe
+al carácter no determinístico de los modelos con razonamiento
+extendido. Implicación práctica: la herramienta debe utilizarse como
+apoyo al analista, no como sustituto — el "human-in-the-loop" no es
+opcional, es metodológicamente necesario.
+
+### Idempotencia en Streamlit: bug de reset al editar valoraciones
+
+Detectado durante pruebas de la fase de human-in-the-loop: al editar
+un valor en la tabla, Streamlit re-ejecuta el script completo,
+provocando que el bloque del file_uploader re-procesara el mismo
+archivo y reseteara el estado (informe = None). Corregido añadiendo
+un centinela (`excel_procesado`) que evita procesar dos veces el
+mismo archivo. Aprendizaje: en apps reactivas, todo side effect debe
+ser idempotente por diseño.
