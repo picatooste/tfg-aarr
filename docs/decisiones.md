@@ -413,7 +413,7 @@ ser idempotente por diseño.
 
 ## Edición de justificaciones antes del PDF
 
-**Fecha:** [fecha actual]
+**Fecha:** 24/09
 
 ### Motivación
 
@@ -434,3 +434,49 @@ El human-in-the-loop es ahora completo: tanto la parte numérica del
 análisis como la parte narrativa quedan bajo control del analista antes
 del informe final. La trazabilidad "quién dijo qué" (LLM vs humano) se
 mantiene en un único campo del modelo.
+
+---
+
+## Envio de correos con adjuntos
+
+**Fecha:** [fecha actual]
+
+### Motivacion
+
+Feedback del tutor: convertir la herramienta en un ciclo completo del
+proceso empresarial. Dos correos automatizados:
+- Al Service Manager: se envia al inicio con la plantilla Excel vacia
+- Al cliente: se envia al final con el informe PDF generado
+
+### Decisiones de diseno
+
+**Modo sandbox por defecto.** Si no hay SMTP configurado en `.env`, el
+sistema simula el envio en lugar de mandar el correo. Esto evita
+envios accidentales durante desarrollo o defensa.
+
+**Confirmacion explicita antes de enviar.** El boton primero muestra
+el correo completo (destinatario, asunto, cuerpo, adjunto) y pide
+confirmacion. No hay envio directo por click involuntario.
+
+**Plantillas externas.** Los cuerpos de los correos viven en
+`templates/emails/*.txt` con variables `{nombre_app}` etc. Se pueden
+editar sin tocar codigo Python.
+
+**Gmail SMTP con App Password.** Se descarta OAuth2 por complejidad
+para un TFG; App Password es estandar, simple y seguro (contrasenna
+especifica revocable, aislada de la principal).
+
+### Consecuencia
+
+La herramienta cubre ahora el flujo completo:
+1. Correo al Service Manager con plantilla
+2. Service Manager rellena y devuelve el Excel
+3. Analista sube el Excel a la herramienta y ejecuta AARR
+4. Analista revisa y ajusta valoraciones + justificaciones
+5. Herramienta envia el informe al cliente por correo
+
+### Consideraciones eticas
+
+- Credenciales (App Password) fuera del repositorio, solo en `.env`
+- En demos y video de defensa se usa la propia direccion del autor
+- El sistema NUNCA envia sin confirmacion humana explicita

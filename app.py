@@ -143,6 +143,69 @@ with col3:
     else:
         st.success(f"Ficha cargada: **{st.session_state.ficha.nombre}**")
 
+# --- Envio de plantilla al Service Manager ---
+with st.expander("Enviar plantilla Excel al Service Manager", expanded=False):
+    from src.mailing import (
+        construir_email_service_manager, enviar,
+    )
+    from src.ingest_excel import generar_plantilla_excel
+    from pathlib import Path
+    import tempfile
+
+    col_a, col_b = st.columns(2)
+    with col_a:
+        email_sm = st.text_input(
+            "Email del Service Manager",
+            placeholder="service.manager@empresa.com",
+        )
+        nombre_sm = st.text_input(
+            "Nombre del Service Manager", placeholder="Nombre y apellidos",
+        )
+    with col_b:
+        nombre_app_email = st.text_input(
+            "Nombre de la aplicacion a analizar",
+            placeholder="ej. AppX",
+        )
+        remitente_sm = st.text_input(
+            "Firma (tu nombre)", placeholder="Analista de Seguridad",
+        )
+
+    if st.button("Preparar correo con plantilla"):
+        if not (email_sm and nombre_sm and nombre_app_email and remitente_sm):
+            st.error("Rellena todos los campos primero.")
+        else:
+            # Generamos la plantilla Excel en memoria
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as tmp:
+                generar_plantilla_excel(tmp.name)
+                plantilla_bytes = Path(tmp.name).read_bytes()
+
+            email = construir_email_service_manager(
+                destinatario=email_sm,
+                nombre_service_manager=nombre_sm,
+                nombre_app=nombre_app_email,
+                remitente_visible=remitente_sm,
+                plantilla_excel_bytes=plantilla_bytes,
+            )
+            st.session_state.email_pendiente_sm = email
+            st.rerun()
+
+    if "email_pendiente_sm" in st.session_state:
+        email = st.session_state.email_pendiente_sm
+        st.markdown("**Previsualizacion del correo:**")
+        st.code(email.resumen(), language=None)
+        col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Confirmar y enviar", type="primary", key="send_sm"):
+                exito, msg = enviar(email)
+                if exito:
+                    st.success(msg)
+                else:
+                    st.warning(msg)
+                del st.session_state.email_pendiente_sm
+        with col2:
+            if st.button("Cancelar", key="cancel_sm"):
+                del st.session_state.email_pendiente_sm
+                st.rerun()
 # =============================================================================
 # SECCION 2: ANALISIS
 # =============================================================================
@@ -411,3 +474,64 @@ else:
         mime="application/pdf",
         type="primary",
     )
+
+        # --- Enviar informe al cliente por email ---
+    with st.expander("Enviar informe al cliente por email", expanded=False):
+        from src.mailing import construir_email_cliente, enviar
+
+        col_a, col_b = st.columns(2)
+        with col_a:
+            email_cli = st.text_input(
+                "Email del cliente",
+                placeholder="cliente@dominio.com", key="email_cli",
+            )
+            nombre_cli = st.text_input(
+                "Nombre del cliente", placeholder="Nombre y apellidos",
+                key="nombre_cli",
+            )
+        with col_b:
+            remitente_cli = st.text_input(
+                "Firma (tu nombre)", placeholder="Analista de Seguridad",
+                key="remitente_cli",
+            )
+
+        if st.button("Preparar correo con el informe"):
+            if not (email_cli and nombre_cli and remitente_cli):
+                st.error("Rellena todos los campos primero.")
+            else:
+                # Recontamos niveles del informe actual
+                conteo = {"critico": 0, "alto": 0, "medio": 0, "bajo": 0}
+                for r in informe.riesgos_residuales:
+                    conteo[r.nivel.value] += 1
+
+                email = construir_email_cliente(
+                    destinatario=email_cli,
+                    nombre_cliente=nombre_cli,
+                    nombre_app=informe.aplicacion,
+                    remitente_visible=remitente_cli,
+                    total_amenazas=len(informe.riesgos_residuales),
+                    n_criticos=conteo["critico"],
+                    n_altos=conteo["alto"],
+                    n_salvaguardas=len(informe.salvaguardas_implantadas),
+                    informe_pdf_bytes=pdf_bytes,
+                )
+                st.session_state.email_pendiente_cli = email
+                st.rerun()
+
+        if "email_pendiente_cli" in st.session_state:
+            email = st.session_state.email_pendiente_cli
+            st.markdown("**Previsualizacion del correo:**")
+            st.code(email.resumen(), language=None)
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("Confirmar y enviar", type="primary", key="send_cli"):
+                    exito, msg = enviar(email)
+                    if exito:
+                        st.success(msg)
+                    else:
+                        st.warning(msg)
+                    del st.session_state.email_pendiente_cli
+            with col2:
+                if st.button("Cancelar", key="cancel_cli"):
+                    del st.session_state.email_pendiente_cli
+                    st.rerun()

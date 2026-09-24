@@ -1,0 +1,13 @@
+Hola {nombre_service_manager},
+
+Se inicia el analisis de riesgos (AARR) de la aplicacion {nombre_app}.
+
+Adjunto encontraras la plantilla de ficha de aplicacion que debes
+completar con los datos actuales de la aplicacion. Esta informacion
+alimentara el analisis automatizado con IA.
+
+Por favor, cumplimentala y devuelvela para poder proceder con el
+analisis.
+
+Un saludo,
+{remitente}

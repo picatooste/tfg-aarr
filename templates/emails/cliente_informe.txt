@@ -1,0 +1,18 @@
+Hola {nombre_cliente},
+
+Adjunto encontraras el informe de analisis de riesgos (AARR) de la
+aplicacion {nombre_app}.
+
+Resumen ejecutivo:
+- Amenazas evaluadas: {total_amenazas}
+- Riesgos criticos: {n_criticos}
+- Riesgos altos: {n_altos}
+- Salvaguardas implantadas: {n_salvaguardas}
+
+El informe completo con detalle de metodologia, tabla de riesgos y
+justificaciones se encuentra en el fichero adjunto.
+
+Para cualquier duda o aclaracion, quedo a tu disposicion.
+
+Un saludo,
+{remitente}
