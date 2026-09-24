@@ -350,15 +350,24 @@ else:
     df_plot = df.set_index("amenaza")[["inherente", "residual"]]
     st.bar_chart(df_plot, height=350)
 
-    # --- Top 3 con justificacion ---
-    st.subheader("Top 3 riesgos residuales: justificacion del LLM")
+    # --- Top 3 con justificacion editable ---
+    st.subheader("Top 3 riesgos residuales: justificacion (editable)")
+    st.caption(
+        "Puedes ajustar la redaccion de cualquier justificacion antes de "
+        "generar el PDF. Los cambios se aplican al informe descargado."
+    )
     top3 = df.head(3)
     val_por_id_actual = {v.amenaza_id: v for v in informe.valoraciones}
 
     for _, row in top3.iterrows():
         aid = row["id"]
         val = val_por_id_actual[aid]
-        etiqueta_fuente = "Ajustado por analista" if val.fuente == "llm_ajustado_humano" else "Propuesto por LLM"
+
+        etiqueta_fuente = (
+            "Ajustado por analista" if val.fuente == "llm_ajustado_humano"
+            else "Propuesto por LLM"
+        )
+
         with st.expander(
             f"**{row['amenaza']}** — residual={row['residual']} "
             f"({row['nivel']}) — {etiqueta_fuente}",
@@ -368,8 +377,25 @@ else:
             c1.metric("Ocurrencia", val.ocurrencia.value)
             c2.metric("Impacto econ.", val.impacto_economico.value)
             c3.metric("Impacto op.", val.impacto_operacional.value)
-            st.markdown("**Justificacion del LLM:**")
-            st.write(val.justificacion)
+
+            # Text area editable, guardado en session_state
+            texto_editado = st.text_area(
+                "Justificacion",
+                value=val.justificacion,
+                key=f"just_{aid}",
+                height=180,
+            )
+
+            # Si el usuario ha cambiado el texto respecto al original,
+            # actualizamos la valoracion y marcamos como ajustada
+            if texto_editado != val.justificacion:
+                # Encontramos la valoracion en el informe y actualizamos
+                for v in informe.valoraciones:
+                    if v.amenaza_id == aid:
+                        v.justificacion = texto_editado
+                        v.fuente = "llm_ajustado_humano"
+                        break
+                st.caption("✎ Justificacion editada por el analista")
 
         # --- Boton de descarga del informe PDF ---
     from src.reporting.pdf_report import generar_informe_pdf

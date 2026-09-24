@@ -408,3 +408,29 @@ archivo y reseteara el estado (informe = None). Corregido añadiendo
 un centinela (`excel_procesado`) que evita procesar dos veces el
 mismo archivo. Aprendizaje: en apps reactivas, todo side effect debe
 ser idempotente por diseño.
+
+---
+
+## Edición de justificaciones antes del PDF
+
+**Fecha:** [fecha actual]
+
+### Motivación
+
+Feedback de la reunión con el tutor: el analista debería poder ajustar
+no solo las valoraciones cuantitativas sino también la redacción de
+las justificaciones del LLM antes de generar el informe final.
+
+### Diseño
+
+Cada justificación se muestra en un `st.text_area` editable dentro del
+expander del Top 3. Si el analista modifica el texto, la valoración se
+marca automáticamente como `fuente="llm_ajustado_humano"` (mismo campo
+que se usaba para valoraciones cuantitativas ajustadas).
+
+### Consecuencia
+
+El human-in-the-loop es ahora completo: tanto la parte numérica del
+análisis como la parte narrativa quedan bajo control del analista antes
+del informe final. La trazabilidad "quién dijo qué" (LLM vs humano) se
+mantiene en un único campo del modelo.
